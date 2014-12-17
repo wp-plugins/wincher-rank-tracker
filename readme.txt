@@ -1,5 +1,5 @@
 ﻿=== Wincher Rank Tracker ===
-Contributors: fanatishe, kim, björn, erik, wincher
+Contributors: wincher.com
 Donate link: https://www.wincher.com/
 Tags: rank tracker, seo, seo ranking, seo tool, ranking tool, wincher, search engine optimization, search engine monitoring, search engine tool, google ranking tool, google
 Requires at least: 3.8
