@@ -1,0 +1,33 @@
+<?php
+    global $current_user;
+    get_currentuserinfo();
+
+    $config = array(
+        "BASE_PATH" => plugin_dir_url( dirname(__FILE__) . '../' ),
+        "USER_INFO" => array(
+            "first" => $current_user->user_firstname,
+            "last" => $current_user->user_lastname,
+            "email" => $current_user->user_email,
+        ),
+        "DOMAIN_NAME" => Wincher_API::getSiteDomain(),
+    );
+
+    $key = get_option('wincher_api_key');
+
+    $config["HAS_KEY"] = !empty($key);
+    $config["ACCOUNT_EMAIL"] = ($config["HAS_KEY"] ? get_option('wincher_email') : false);
+
+    $key_verified = get_option('wincher_api_key_verified');
+    $config["HAS_KEY_VERIFIED"] = !empty($key_verified);
+
+    $config["HAS_PASSWORD"] = true;
+
+    $has_key_verify_by_email = get_option('wincher_api_key_verify_by_email');
+    $config["HAS_EMAIL_VERIFICATION_REQUEST"] = !empty($has_key_verify_by_email);
+
+?><div data-ng-controller="MainController">
+    <script type="text/javascript">
+        angular.module('app').constant('config', <?php echo json_encode($config) ?>);
+    </script>
+    <div id="wincher_container" ui-view><div style="font-weight: bold; padding: 20px;">Please wait...</div></div>
+</div>

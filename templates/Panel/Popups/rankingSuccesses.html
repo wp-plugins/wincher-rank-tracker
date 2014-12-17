@@ -1,0 +1,37 @@
+<div class="text-left">
+    <div class="popup-content" >
+        <h1>Ranking successes and alerts</h1>
+        <hr />
+        <div class="table-responsive">
+            <table >
+                <tbody>
+                <tr data-ng-repeat="success in model.Notifications">
+                    <td class="text-right auto-width">
+                        <img  data-ng-show="success.IsSuccess" data-ng-src="{{config.BASE_PATH}}images/Icon/StarIcon.png" />
+                        <img  data-ng-show="success.IsAlert" data-ng-src="{{config.BASE_PATH}}images/Icon/AlertsIcon.png" />
+                    </td>
+                    <td>
+                        <span data-ng-bind-html="success.Text"></span>
+                        ({{ success.TriggerDate | date:"MMMM d"}})
+                    </td>
+                    <td class="text-right" style="width: 90px;">
+                        <div data-ng-if="success.IsSuccess">
+                            <a href="" data-ng-click="emailSharePopup(success.Id)">
+                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/MailIcon.png" /></a>
+                            <a href="" data-ng-click="facebookShare(success.Id)">
+                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" /></a>
+                            <a href="" data-ng-click="twitterShare(success.Id)">
+                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/TwitterIcon.png" /></a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div data-ng-show="model.TotalPages > 1"  data-pagination="" data-total-items="model.TotalItems" items-per-page="model.resultsPerPage"  on-select-page="reload(page)" data-page="model.CurrentPage" class="pull-left" max-size="5" boundary-links="true"  previous-text="&lsaquo;" next-text="&rsaquo;" first-text="First" last-text="Last"></div>
+        <br />
+        <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupLoading" alt="loading" />
+    </div>
+</div>

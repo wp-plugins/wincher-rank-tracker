@@ -1,0 +1,22 @@
+<div class="popup-content">
+
+    <div data-ng-if="bulkErrorMessage != null" class="alert alert-danger">{{ bulkErrorMessage }}</div>
+
+    <h1>Import from file</h1>
+    <br/>
+    <label class="pull-left">Select .csv or .txt file <b class="font-weight-normal">(one keyword per line)</b></label>
+    <br/><br/>
+    <input type="file" class="displayinline pull-left" data-ng-file-select="onFileSelect($files)">
+    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="displayinline" data-ng-show="fileUploading" alt="loading" />
+    <br/>
+    <br/>
+    <div data-ng-show="keywords || true">
+        <label class="pull-left font-weight-normal">Please verify keywords before import</label><br/>
+        <textarea  style="height: 150px;" class="form-control" data-ng-model="keywords"></textarea>
+    </div>
+    <br/>
+
+    <button type="submit" data-ng-click="ok(keywords)" ng-hide="!keywords" class="btn-alternative">Import keywords</button>
+    <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupLoading" alt="loading" />
+</div>

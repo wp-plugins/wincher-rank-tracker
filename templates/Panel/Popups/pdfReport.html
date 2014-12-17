@@ -1,0 +1,78 @@
+<div class="popup-content ">
+    <div data-ng-if="uploadError != null" class="alert alert-danger">{{ uploadError }}</div>
+    <h1 class="text-center">Auto report</h1>
+    <br />
+
+    <form data-ng-submit="post()">
+        <div class="form-group">
+            <label class="text-left paddingBottom10">Interval</label>
+            <div>
+
+                <!--
+                <input type="radio" data-ng-model="model.SendInterval" data-ng-value="2" />
+                <label class="font-weight-normal">Daily</label>
+                    -->
+                <input type="radio" id="vatRadioYes" data-ng-model="model.SendInterval" data-ng-value="0"style="margin-left: 20px;" />
+                <label class="font-weight-normal">Weekly</label>
+                <input type="radio" id="vatRadioNo" data-ng-model="model.SendInterval" data-ng-value="1" style="margin-left: 20px;" />
+                <label class="font-weight-normal">Monthly</label>
+            </div>
+        </div>
+        <div class="form-group" data-ng-if="model.SendInterval == 0">
+            <label>Day of week to send report</label>
+
+            <select data-ng-model="model.DayOfWeekToSend">
+                <option value="1">Monday</option>
+                <option value="2">Tuesday</option>
+                <option value="3">Wednesday</option>
+                <option value="4">Thursday</option>
+                <option value="5">Friday</option>
+                <option value="6">Saturday</option>
+                <option value="7">Sunday</option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+            <label>Send to (email)</label>
+            <input type="text" data-ng-model="model.SendTo" class="form-control">
+            <p class="small-grey paddingTop5 "><b>Note:</b> Use comma for multiple addresses</p>
+        </div>
+
+
+
+        <div class="form-group">
+            <label>Logo <span class="font-weight-normal">(optional)</span></label>
+            <br />
+
+            <br />
+
+
+            <input type="file" data-ng-file-select="onFileSelect($files)">
+
+            <br />
+
+
+            <div data-ng-if="model.LogoId">
+                <img alt="logo" data-ng-src="/image/get?Id={{model.LogoId}}" height="50" />
+            </div>
+
+            <br />
+        </div>
+
+        <div class="form-group" data-ng-if="model.Id">
+
+            <input type="checkbox" data-ng-model="model.Enabled" class="form-control" />
+            <label class="font-weight-normal">Enabled</label>
+        </div>
+
+        <button type="submit" class="center-block paddingLeft70 paddingRight70 btn-alternative"> <span data-ng-if="model.Id">Save</span>  <span data-ng-if="!model.Id">Activate</span></button>
+
+
+        <div class="text-center center-block" data-ng-show="popupLoading">
+            <img src="/Content/Images/preloader16.gif" class="text-center center-block" alt="loading" />
+        </div>
+    </form>
+    <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+</div>
