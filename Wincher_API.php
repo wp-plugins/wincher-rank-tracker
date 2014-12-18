@@ -504,7 +504,7 @@ Class Wincher_API {
         $url = 'key/verifybyemail';
         $method = 'POST';
 
-        $callback_url = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://') . $_SERVER["HTTP_HOST"] . '/wp-admin/admin.php?page=wincher/wincher.php';
+        $callback_url = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://') . $_SERVER["HTTP_HOST"] . '/wp-admin/admin.php?page=' . PLUGIN_NAME . '/wincher.php';
 
         $response = self::requestApi(array(
             'args' => array(

@@ -9,6 +9,8 @@ Author URI: http://wincher.com
 */
 
 
+define('PLUGIN_NAME', 'wincher-rank-tracker');
+
 // Hook for adding admin menus
 function admin_menu_hook() {
     add_menu_page ( 'Wincher', 'Wincher', 'manage_options', __FILE__ , 'main', plugin_dir_url( __FILE__ ) . 'images/logo_menu.png' , '2.34');
@@ -37,7 +39,7 @@ if (empty($key)) {
 init();
 
 function activate_button() {
-    ?><div style="font: bold 14px Arial,sans-serif; border-radius: 5px; background-color:#5a3264; padding:10px 10px 10px 225px; color:white; margin-bottom:10px; position: relative;"><div style="position: absolute; top:10px; left:10px;"><a style="display:inline-block; border-radius: 2px; padding:10px 30px; margin-right: 30px; background-color: #f19901; color:white; text-decoration: none;" href="admin.php?page=wincher/wincher.php">Start using Wincher now</a></div><div style="text-align: center; height:29px; width: 100%; padding-top: 9px;"><span>Don't miss your search engine rankings - start using Wincher now!</span></div></div><?php
+    ?><div style="font: bold 14px Arial,sans-serif; border-radius: 5px; background-color:#5a3264; padding:10px 10px 10px 225px; color:white; margin-bottom:10px; position: relative;"><div style="position: absolute; top:10px; left:10px;"><a style="display:inline-block; border-radius: 2px; padding:10px 30px; margin-right: 30px; background-color: #f19901; color:white; text-decoration: none;" href="admin.php?page=<?php echo PLUGIN_NAME; ?>/wincher.php">Start using Wincher now</a></div><div style="text-align: center; height:29px; width: 100%; padding-top: 9px;"><span>Don't miss your search engine rankings - start using Wincher now!</span></div></div><?php
 }
 
 function init() {
@@ -48,7 +50,8 @@ function init() {
 
     add_action('admin_enqueue_scripts', 'my_enqueue');
     function my_enqueue($hook) {
-        if( 'toplevel_page_wincher/wincher' != $hook) return;
+
+        if( 'toplevel_page_' . PLUGIN_NAME . '/wincher' != $hook) return;
 
         wp_register_script('angular-core', plugins_url( '/js/angular.min.js', __FILE__ ), array(), null, false);
 
