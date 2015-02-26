@@ -1,0 +1,38 @@
+<div class="popup-content">
+    <div data-ng-if="uploadError != null" class="alert alert-danger">{{ uploadError }}</div>
+    <h1 class="text-center">Select logotype for PDF report</h1>
+    <br />
+    <table class="border-none">
+        <tr>
+            <td class="border-none">
+                <a href="">
+                    <img src="/Content/Images/LeftArrow2.png" data-ng-click="prev()" />
+                </a>
+            </td>
+            <td class="text-center border-none">
+                <img alt="logo" data-ng-src="/image/get?Id={{images[selectedIndex]}}" height="50" />
+            </td>
+            <td class="text-right border-none"><a href="">
+                <img src="/Content/Images/RightArrow2.png" data-ng-click="next()" />
+            </a>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <div class="form-group">
+        <label>Or upload new</label>
+        <br />
+        <br />
+        <input type="file" data-ng-file-select="onFileSelect($files)">
+        <br />
+    </div>
+    <div class="text-center">
+        <a href="/pdf/rank/{{Request.AccountDomainId}}/{{Request.GraphInterval}}/{{images[selectedIndex]}}" type="submit" class="paddingRight70 paddingLeft70 no-underline btn btn-alternative">Download PDF</a>
+    </div>
+    <div class="text-center center-block" data-ng-show="popupLoading">
+        <img src="/Content/Images/preloader16.gif" class="text-center center-block" alt="loading" />
+    </div>
+    <button
+            title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">
+        &times;</button>
+</div>

@@ -1,0 +1,34 @@
+<div class="popup-content text-center">
+    <h1>Existing user</h1>
+    <p>Your email address already exists in Wincher,<br /> please verify your account by password or mail.</p>
+    <form class="form-horizontal clearfix" name="form">
+        <div data-ng-if="verifyErrorMessage != null" class="alert alert-danger">{{ verifyErrorMessage }}</div>
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-6 text-left">
+                <input class="form-control" type="radio" name="verify_by" id="verify_by_password" data-ng-model="resource.verify_by" value="password" data-ng-required="true" style="left:3px; top:-2px; height: 16px"/>
+                <label class="font-weight-normal" for="verify_by_password"><strong>Verify by password</strong></label>
+            </div>
+            <div class="col-xs-12 col-sm-6 text-left">
+                <input class="form-control" type="radio" name="verify_by" id="verify_by_email" value="email" data-ng-model="resource.verify_by" data-ng-required="true" style="left:3px; top:-2px; height: 16px"/>
+                <label class="font-weight-normal" for="verify_by_email"><strong>Verify by email</strong></label>
+            </div>
+        </div>
+        <div>
+            <div class="col-xs-9" data-ng-show="resource.verify_by == 'email'">
+                <label class="pull-left font-weight-normal" for="email"><strong>Email</strong></label>
+                <input class="form-control" type="text" name="email" id="email" data-ng-model="resource.email" data-ng-required="true" placeholder="Email" disabled="disabled" />
+            </div>
+            <div class="col-xs-9" data-ng-show="resource.verify_by == 'password'">
+                <label class="pull-left font-weight-normal" for="email"><strong>Wincher password</strong></label>
+                <input class="form-control" type="password" name="password" id="password" data-ng-model="resource.password" data-ng-required="resource.verify_by == 'password'" />
+                <label for="password" class="pull-left label-warning" data-ng-show="!form.password.$pristine && form.password.$error.required">You must enter Password.</label>
+                <label for="password" class="pull-left label-warning" data-ng-show="!form.password.$pristine && form.password.$error.password_wrong">Wrong password.</label>
+            </div>
+            <div style="padding-top:25px;">
+                <button type="submit" data-ng-click="verify(form)" class="btn-alternative col-xs-3">Verify</button>
+            </div>
+        </div>
+    </form>
+    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupVerifyLoading" alt="loading" />
+    <button title="Close (Esc)" data-ng-click="activation_reset()" type="button" class="mfp-close">&times;</button>
+</div>
