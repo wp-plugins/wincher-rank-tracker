@@ -60,7 +60,7 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
         return deferred.promise;
     };
 
-    var track = function (id, from, to, callback) {
+    var track = function (id, callback) {
 
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,

@@ -13,7 +13,7 @@
             <h2 class="marginBottom5">{{Domain.Offer.FirstName }}, we have a great introduction offer to you!
             </h2>
             <p>
-                Get Wincher PRO with <b class="wincherOrangeDark">{{Domain.Offer.Percentage * 100}}%</b> discount for <b class="wincherOrangeDark">{{ Domain.Offer.MaxUsage }} months</b>. It's lime limited and you have <b>{{ Domain.Offer.DaysLeft }}</b> day<span data-ng-if="Domain.Offer.DaysLeft != 1">s</span> left to claim the offer.
+                Get Wincher PRO with <b class="wincherOrangeDark">{{Domain.Offer.Percentage * 100}}%</b> discount for <b class="wincherOrangeDark">{{ Domain.Offer.MaxUsage }} months</b>. It's lime limited and you have <b>{{ Domain.Offer.DaysLeftText }}</b> left to claim the offer.
                 <br />
                 <a analytics-on analytics-category="upgrade" analytics-event="click-to-upgrade" analytics-label="domain-page-discount-link1" id="domain-page-discount-link1" class="wincherOrangeDark" href="{{Domain.Offer.UpgradeUrl}}">Go to offer</a>
             </p>
@@ -173,12 +173,11 @@
 
             <a class="anchor" id="keywords"></a>
 
-            <form name="addKeywordForm" class="form-inline-groups" data-ng-submit="createKeyword(Domain.newKeyword)">
-
+            <form name="addKeywordForm" class="form-inline-groups" data-ng-submit="createKeyword()">
                 <div class="  pull-left">
                     <div class="form-group">
                         <label>{{dict.x_add_keyword}}</label>
-                        <input type="text" class="form-control" data-ng-model="Domain.newKeyword" />
+                        <input type="text" class="form-control" data-ng-model="keywordForm.newKeyword" />
                     </div>
                     <button type="submit" class="btn-alternative" data-ng-disabled="addingKeywordLoading"><span class="icon-large wi-plus"></span>{{dict.x_add}}</button>
                     <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="addingKeywordLoading" alt="loading" />
@@ -203,7 +202,8 @@
             </form>
             <br />
             <div class="floatclear"></div>
-            <br /><br/>
+            <br />
+            <br />
             <table class="table-striped">
                 <thead>
                 <tr>
@@ -237,9 +237,11 @@
                     <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-overflow-ellipsis-200"><a href="" class="a-text-style" title="{{ keyword.Rank.Href }}">{{ keyword.Rank.Href }}</a> </td>
                     <td>
                         <span data-ng-if="keyword.Rank.Position == 101">100+</span>
-                        <span data-ng-if="keyword.Rank.Position < 101"><a href="" data-ng-click="serpPopup(keyword.UserDomainKeywordId)">{{ keyword.Rank.Position }}</a></span>
+                        <span data-ng-if="keyword.Rank.Position < 101 && keyword.Rank.Position > 0"><a href="" data-ng-click="serpPopup(keyword.UserDomainKeywordId)">{{ keyword.Rank.Position }}</a></span>
 
-                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="displayinline" data-ng-show="!keyword.Rank.Position" alt="loading" />
+                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" style="margin-right:5px;" class="displayinline" data-ng-show="keyword.Rank.Spinner === true" alt="loading" />
+                        <i> <span class="small-black" data-ng-show="keyword.Rank.Text">{{ keyword.Rank.Text }}</span></i>
+
 
                     </td>
                     <td style="width: 20px;">{{ keyword.Change }}</td>
@@ -269,8 +271,8 @@
                         <span data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
                            <p>Keyword <b>bulk import</b>, <b>ranking URL</b> and Google <b>searches</b> per keyword available in PRO account
 
-                               <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
-                               <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
+                                <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
+                                <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
                            </p>
                         </span>
 
@@ -309,11 +311,6 @@
                                             <a class="no-underline"  href="" data-ng-click="facebookShare(success.Id)">
                                                 <img data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" /></a>
 
-                                            <!--<iframe style="width:100px;height:100px;" src="http://www.facebook.com/plugins/share_button.php?href=http%3A%2F%2Fwww.wincher.com&layout=icon"/>-->
-                                            <!--<a class="no-underline"  href="" data-ng-click="facebookShare(success.Id)">
-                                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" /></a>-->
-                                            <!--<a class="no-underline" target="_blank" href="http://www.facebook.com/sharer.php?u=http://wincher.com&media=https://www.wincher.com/Content/Images/Badge.png&description={{success.urlText}}">
-                                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" /></a>-->
                                             <a class="no-underline"  href="" data-ng-click="twitterShare(success.Id)">
                                                 <img data-ng-src="{{config.BASE_PATH}}images/Icon/TwitterIcon.png" /></a>
                                         </span>

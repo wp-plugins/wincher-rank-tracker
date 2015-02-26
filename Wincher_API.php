@@ -1,7 +1,7 @@
 <?php
 
 Class Wincher_API {
-    public static $base_url = 'https://wp.wincher.com/v1/';
+    public static $base_url = 'https://wp.wincher.com/v2/';
 
     public static function processRequest($request_type) {
         if (empty($request_type)) {
@@ -1253,7 +1253,7 @@ Class Wincher_API {
         } else {
             $result = array(
                 'success' => true,
-                'data' => $response_body,
+                'Message' => $response_body,
             );
         }
 
@@ -1462,7 +1462,7 @@ Class Wincher_API {
             'headers' => array(
                 'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
             ),
-        ));
+        ), true, true);
 
         $response_body = json_decode($response['body'], true);
 

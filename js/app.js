@@ -557,7 +557,7 @@ angular.module('app', [
 
                     $scope.config = config;
 
-                    $scope.dict = {"CUSTOM":"Custom","LAST_MONTH":"Last month","LAST_WEEK":"Last week","LAST_YEAR":"Last year","ONE_MONTH":"One month","ONE_WEEK":"One week","ONE_YEAR":"One year","p_account_close_h1":"Close account","p_account_overview_h1":"Overview","p_account_payment_h1":"Payment","p_account_profile_h1":"Profile","p_account_transactions_h1":"Transactions","p_account_users_h1":"Users","p_alerts_h1":"Alerts","p_competitors_h1":"Competitors","p_keywords_h1":"Keywords","p_keywords_p":"You can add as many keywords as you want! You are currently tracking a total of {0} keywords for your domains. Add more keywords to track by adding them below. More than {1} keywords is {2} euro per keyword per month.","p_keywords_p_free":"You can only add {0} keyword for your Free account. Please upgrade to Account to add and track more keywords.","p_keywords_p_trial":"You can add {0} different keywords for your Trial account.  You are currently tracking a total of {1} keywords for your domain. Add more keywords to track by adding them below.","p_keywords_popup_p":"By adding extra keyword you also confirming that {0} will be added to your invoice.","p_myaccount_h1":"My account","p_mydomains_h1":"My domains","p_ranking_h1":"Ranking","p_renewaccount_h1":"Your 30 day trial account has expired!","p_support_h1":"Support","SIX_MONTHS":"Six months","topmenu_addremove_domains":"Add/remove domains","topmenu_admin":"Admin","topmenu_logout":"Sign out","topmenu_myaccount":"My account","topmenu_mydomains":"My domains","topmenu_rankings":"Rankings","TWO_MONTHS":"Two months","TWO_WEEKS":"Two weeks","TWO_YEARS":"Two years","x_2nd_best":"2nd best","x_active":"Active","x_add":"Add","x_add_domain":"add domain","x_add_keyword":"Add keyword","x_added":"Added","x_all":"All","x_amount":"Amount","x_best":"best","x_card_holder":"Card holder","x_category":"category","x_change":"change","x_change_card":"Change card","x_competitor":"Competitors","x_competitors":"Competitors","x_credit_card_information":"Credit card information","x_csv":"CSV","x_current_plan":"Current plan","x_date":"Date","x_description":"Description","x_domain_name":"Domain name","x_domain_to_monitor":"Domain to monitor","x_expiry_date":"Expiry date","x_extra_keywords":"Extra keywords","x_keyword":"keyword","x_keywords":"Keywords","x_last_week_position_summary":"Last week position summary","x_manage_domains":"manage domains","x_manage_keyword_for":"Manage keywords for","x_message":"message","x_my_account":"my account","x_name":"Name","x_on":"on","x_on_all_keywords":"on all keywords","x_pdf":"PDF","x_position":"position","x_rank_last_updated":"rank last updated","x_rankings":"rankings","x_recent_ranking_success":"recent ranking success","x_search_location":"search location","x_select":"select","x_select_date_range":"select date range","x_select_keyword":"select keyword","x_send_graph":"Send graph","x_start_price":"Start price","x_support_category":"Support category","x_total":"Total","x_total_current_plan":"Total current plan","x_trial_account":"Trial account","x_view_all":"view all","x_worst":"worst","x_zoom_chart":"Zoom chart"};
+                    $scope.dict = {"ASC":"Ascending","CHANGE_ONE_MONTH":"Trend 1 month","CHANGE_ONE_WEEK":"Trend 1 week","CHANGE_SIX_MONTHS":"Trend 6 months","CHANGE_THREE_MONTHS":"Trend 3 months","CREATED_DATE":"Created","CUSTOM":"Custom","DESC":"Descending","DOMAIN_NAME":"Domain name","LAST_MONTH":"Last month","LAST_WEEK":"Last week","LAST_YEAR":"Last year","NUM_COMPETITORS":"Competitors","NUM_KEYWORDS":"Keywords","ONE_MONTH":"One month","ONE_WEEK":"One week","ONE_YEAR":"One year","p_account_close_h1":"Close account","p_account_overview_h1":"Overview","p_account_payment_h1":"Payment","p_account_profile_h1":"Profile","p_account_transactions_h1":"Transactions","p_account_users_h1":"Users","p_alerts_h1":"Alerts","p_competitors_h1":"Competitors","p_keywords_h1":"Keywords","p_keywords_p":"You can add as many keywords as you want! You are currently tracking a total of {0} keywords for your domains. Add more keywords to track by adding them below. More than {1} keywords is {2} euro per keyword per month.","p_keywords_p_free":"You can only add {0} keyword for your Free account. Please upgrade to Account to add and track more keywords.","p_keywords_p_trial":"You can add {0} different keywords for your Trial account.  You are currently tracking a total of {1} keywords for your domain. Add more keywords to track by adding them below.","p_keywords_popup_p":"By adding extra keyword you also confirming that {0} will be added to your invoice.","p_myaccount_h1":"My account","p_mydomains_h1":"My domains","p_ranking_h1":"Ranking","p_renewaccount_h1":"Your 30 day trial account has expired!","p_support_h1":"Support","SEARCH_LOCATION":"Search location","SIX_MONTHS":"Six months","THREE_MONTHS":"Three months","topmenu_addremove_domains":"Add/remove domains","topmenu_admin":"Admin","topmenu_logout":"Sign out","topmenu_myaccount":"My account","topmenu_mydomains":"My domains","topmenu_rankings":"Rankings","TWO_MONTHS":"Two months","TWO_WEEKS":"Two weeks","TWO_YEARS":"Two years","x_2nd_best":"2nd best","x_active":"Active","x_add":"Add","x_add_domain":"add domain","x_add_keyword":"Add keyword","x_added":"Added","x_all":"All","x_amount":"Amount","x_best":"best","x_card_holder":"Card holder","x_category":"category","x_change":"change","x_change_card":"Change card","x_competitor":"Competitors","x_competitors":"Competitors","x_credit_card_information":"Credit card information","x_csv":"CSV","x_current_plan":"Current plan","x_date":"Date","x_description":"Description","x_domain_name":"Domain name","x_domain_to_monitor":"Domain to monitor","x_expiry_date":"Expiry date","x_extra_keywords":"Extra keywords","x_keyword":"keyword","x_keywords":"Keywords","x_last_week_position_summary":"Last week position summary","x_manage_domains":"manage domains","x_manage_keyword_for":"Manage keywords for","x_message":"message","x_my_account":"my account","x_name":"Name","x_on":"on","x_on_all_keywords":"on all keywords","x_pdf":"PDF","x_position":"position","x_rank_last_updated":"rank last updated","x_rankings":"rankings","x_recent_ranking_success":"recent ranking success","x_search_location":"search location","x_select":"select","x_select_date_range":"select date range","x_select_keyword":"select keyword","x_send_graph":"Send graph","x_start_price":"Start price","x_support_category":"Support category","x_total":"Total","x_total_current_plan":"Total current plan","x_trial_account":"Trial account","x_view_all":"view all","x_worst":"worst","x_zoom_chart":"Zoom chart"};
                     $scope.basepath = config.BASE_PATH;
 
                     $scope.loading = true;
@@ -565,12 +565,12 @@ angular.module('app', [
                     $scope.addingKeywordLoading = false;
                     $scope.addCompetitorLoading = false;
                     $scope.accountUpgradeErrorMessage = null;
-                    //$scope.resultsPerPage = null;
-                    //$scope.currentPage = 1;
-                    //$scope.orderBy = "adk.LastRank asc";
+
                     $scope.orderByAsc = true;
                     $scope.keywordsFrom = 1;
                     $scope.KeywordsTo = 1;
+
+                    $scope.keywordForm = {};
 
                     $scope.Domain = {};
                     $scope.Domain.Request = {};
@@ -679,16 +679,16 @@ angular.module('app', [
                                     $scope.getKeywords();
                                 }
 
-                                if (rankingCheck == true && domain.AccountTypeIdentifier != 'PACKAGE_FREE') {
+                                if (rankingCheck == true) {
 
-                                    $scope.notTracked = window._.filter($scope.Domain.Keywords, function (item) { return !item.Rank; });
+                                    $scope.notTracked = window._.filter($scope.Domain.Keywords, function (item) { return item.Rank && item.Rank.Spinner; });
 
                                     $scope.total = $scope.notTracked.length;
                                     $scope.currentIndex = 0;
 
                                     var callback = function() {
 
-                                        $scope.reload(true, 1);
+                                        $scope.reload(false, 1);
                                         $scope.currentIndex = $scope.currentIndex + 1;
 
                                         if ($scope.currentIndex < $scope.total && $scope.notTracked[$scope.currentIndex].UserDomainKeywordId) {
@@ -699,6 +699,19 @@ angular.module('app', [
                                     if ($scope.notTracked.length > 0) {
                                         keywordService.track($scope.notTracked[$scope.currentIndex].UserDomainKeywordId, callback);
                                     }
+                                }
+
+                                if ($scope.Domain.InitialPopupShown == false) {
+
+                                    $modal.open({
+                                        templateUrl: config.BASE_PATH + 'templates/Panel/Popups/initialInformation.html',
+                                        controller: 'InitialPopupCtrl',
+                                        opened: $scope.$parent.wrapperFooterClass = "hide-if-mobile",
+                                        resolve: {
+                                            dailyRankingsToDate: function () { return $scope.Domain.DailyRankingsToDate; },
+                                            upgrade_now_function: function () { return $scope.upgrade_now }
+                                        }
+                                    });
                                 }
                             }
                         });
@@ -1002,6 +1015,8 @@ angular.module('app', [
 
                     $scope.createKeyword = function (keywords) {
 
+                        var keywords = $scope.keywordForm.newKeyword;
+
                         if ($scope.Domain.KeywordAddingDisabled) {
                             $modal.open({
                                 templateUrl: config.BASE_PATH + 'templates/Panel/Popups/addKeywordAccountLimited.html',
@@ -1017,11 +1032,15 @@ angular.module('app', [
                                 $scope.addingKeywordLoading = true;
 
                                 keywordService.createKeyword($rootScope.userDomainId, keywords).then(function (response) {
+
+                                    $scope.keywordForm.newKeyword = "";
+                                    $scope.Domain.Request.OrderBy = "adk.CreatedAt desc";
+
                                     $scope.reload(true, $scope.Domain.Request.Page);
                                     $scope.hideMessages();
 
                                     if (response.data.success) {
-                                        $scope.keywordSuccessMessage = "Keyword [" + keywords + "] created successfully";
+                                        $scope.keywordSuccessMessage = response.data.Message;
                                     } else {
                                         $scope.keywordErrorMessage = response.data.error;
                                     }
@@ -1031,10 +1050,10 @@ angular.module('app', [
 
                                 }, function (data) {
 
+                                    scope.keywordForm.newKeyword = "";
                                     $scope.hideMessages();
-                                    $scope.keywordErrorMessage = data.Message;
+                                    $scope.keywordErrorMessage = response.data.Message;
                                     $scope.addingKeywordLoading = false;
-                                    $scope.newKeyword = "";
                                 });
                             }
                         };
@@ -1063,13 +1082,11 @@ angular.module('app', [
 
                             $scope.keywordSuccessMessage = "Keyword [" + keyword.KeywordName + "] has been deleted";
                             $scope.addingKeywordLoading = false;
-                            $scope.newKeyword = "";
-
 
                         }, function () {
+
                             $scope.hideMessages();
                             $scope.addingKeywordLoading = false;
-                            $scope.newKeyword = "";
 
                         });
                     };
@@ -1087,7 +1104,9 @@ angular.module('app', [
 
                         modalInstance.result.then(function (model) {
 
-                            $scope.reload(false, $scope.Domain.Request.Page);
+                            $scope.Domain.Request.OrderBy = "adk.CreatedAt desc";
+                            $scope.reload(true, $scope.currentPage);
+
                             $scope.hideMessages();
                             $scope.keywordSuccessMessage = "Keywords created successfully";
                             $scope.addingKeywordLoading = false;
@@ -1144,9 +1163,8 @@ angular.module('app', [
                             if (response.success) {
                                 var accountDomainKeywordId = response.data;
                             } else {
+
                                 $modal.open({
-
-
                                     templateUrl: config.BASE_PATH + 'templates/Panel/Popups/chartZoomError.html',
                                     controller: ['$scope', '$modalInstance', 'config', function($scope, $modalInstance, config) {
                                         $scope.config = config;
@@ -1168,6 +1186,7 @@ angular.module('app', [
                                     selectedGraphInterval: function () { return $scope.Domain.Request.GraphInterval; },
                                     showCompetitors: function () { return showCompetitors; }
                                 }
+
                             });
                         });
                     };
@@ -1358,6 +1377,27 @@ angular.module('app', [
 
             return text;
         };
+    }]);
+
+angular.module('app').controller('InitialPopupCtrl', ['$scope', '$modalInstance', 'dailyRankingsToDate', '$window', 'upgrade_now_function',
+    function ($scope, $modalInstance, dailyRankingsToDate, $window, upgrade_now_function) {
+
+        $scope.dailyRankingsToDate = dailyRankingsToDate;
+
+        $scope.ok = function () { $modalInstance.close(); };
+
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.$on('Error', function (event, msg) {
+            $scope.successMessage = null;
+            $scope.errorMessage = msg;
+            $scope.popupLoading = false;
+        });
+
+        $scope.upgrade_now = upgrade_now_function;
     }]);
 
 angular.module('app').controller('EmailShareCtrl', ['$scope', '$modalInstance', 'shareService', 'usersService', 'successId', 'config',
@@ -1728,7 +1768,6 @@ angular.module('app').controller('CreateKeywordBulkPopupCtrl', ['$scope', '$root
 
 }]);
 
-
 angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modalInstance', '$sce', 'accountDomainKeywordId', 'domainService', 'selectedGraphInterval', 'showCompetitors', 'config', function ($scope, $modalInstance, $sce, accountDomainKeywordId, domainService, selectedGraphInterval, showCompetitors, config) {
     $scope.config = config;
 
@@ -1738,9 +1777,9 @@ angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modal
     if (h > 600)
         h = 600;
 
-    var params = {};
+    h = Math.round(h);
 
-    console.log(showCompetitors);
+    var params = {};
 
     params.GraphInterval = selectedGraphInterval;
     params.includeCompetitors = showCompetitors;
@@ -1748,6 +1787,7 @@ angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modal
     params.SelectedAccountDomainKeywordId = accountDomainKeywordId;
 
     domainService.getKeywordChartRaw(params, function (response) {
+
         if (response.success) {
             for (var i = 0; i < response.data.graphs; i++) {
                 response.data.graphs[i] = $sce.trustAsHtml(response.data.graphs[i]);

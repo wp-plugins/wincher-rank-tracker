@@ -3,8 +3,8 @@ Contributors: wincher.com
 Donate link: https://www.wincher.com/
 Tags: rank tracker, seo, seo ranking, seo tool, ranking tool, wincher, search engine optimization, search engine monitoring, search engine tool, google ranking tool, google
 Requires at least: 3.8
-Tested up to: 4.0.1
-Stable tag: 1.0.0
+Tested up to: 4.1.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,8 +51,13 @@ This section describes how to install and activate the plugin.
 
 == Changelog ==
 
+= 1.1 =
+* Fixed issue for blogs using https.
+* Faster initial ranking update.
+
 = 1.0 =
 * First version.
+
 
 == Frequently Asked Questions ==
 
