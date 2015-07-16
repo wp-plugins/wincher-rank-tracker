@@ -1,0 +1,38 @@
+<div class="popup-content text-center" style="padding-right: 0; padding-left: 0;">
+    <img src="/Content/Images/preloader50.gif" data-ng-show="loading" class="preloader" alt="loading" />
+
+    <div data-ng-hide="loading" >
+
+        <div data-ng-if="errorMessage != null" class="alert alert-danger">{{ errorMessage }}</div>
+        <h1 class="text-capitalize">{{ model.Keyword }} </h1>
+
+        <p>
+            {{model.SearchEngineName}} | {{ model.Date | date : 'mediumDate'}}
+        </p>
+
+        <div class="table-responsive" style="height:500px; overflow-y:auto; overflow-x:hidden; padding-right: 30px; border-bottom: none; border-top: none;">
+            <table class="skip-side-border text-left" style="border-bottom: none; border-top: none; margin-bottom: 0;">
+                <tbody>
+                <tr data-ng-repeat="result in model.Data">
+
+                    <td data-ng-if="result.PosOrg == model.MyPosition" style="width: 10px; border-top: solid 1px #fff; border-bottom: solid 1px #fff; background-color: #8A28A8;"></td>
+                    <td data-ng-if="result.PosOrg != model.MyPosition" style="width: 10px; border-top: solid 1px #fff; border-bottom: solid 1px #fff;"></td>
+
+                    <td style="width: 10px; border-top: solid 1px #fff; border-bottom: solid 1px #fff;"></td>
+
+                    <td class="vertical-align-top" style="padding-left: 0px;"><b>{{result.PosOrg}}</b></td>
+
+                    <td class="vertical-align-top">
+                        <span class="font-weight-bold-600 wincherPurpleLight">{{result.Title}}</span>
+                        <br />
+                        <b class="small">{{result.Href}}</b>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+    </div>
+</div>

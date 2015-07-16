@@ -1,0 +1,377 @@
+<div class="container col-sm-12 col-md-10 col-lg-8">
+    <img data-ng-onerror="this.onerror=null; this.src='{{config.BASE_PATH}}images/logo.png';" alt="Wincher" data-ng-src="{{config.BASE_PATH}}images/logo.png" />
+    <div ng-cloak data-ng-show="isAccountError" class="paddingTop15 account_widget">
+        <p class="text-center font-weight-bold">{{accountError}}</a> </p>
+    </div>
+    <hr>
+    <img alt="loading" class="preloader ng-hide" data-ng-show="loading" data-ng-src="{{config.BASE_PATH}}images/preloader50.gif">
+
+    <div data-ng-if="!loading && !isAccountError" class="ng-scope">
+
+        <div class="discount-offer" data-ng-if="Domain.Offer">
+
+            <h2 class="marginBottom5">{{Domain.Offer.FirstName }}, we have a great introduction offer to you!
+            </h2>
+            <p>
+                Get Wincher PRO with <b class="wincherOrangeDark">{{Domain.Offer.Percentage * 100}}%</b> discount for <b class="wincherOrangeDark">{{ Domain.Offer.MaxUsage }} months</b>. It's lime limited and you have <b>{{ Domain.Offer.DaysLeftText }}</b> left to claim the offer.
+                <br />
+                <a analytics-on analytics-category="upgrade" analytics-event="click-to-upgrade" analytics-label="domain-page-discount-link1" id="domain-page-discount-link1" class="wincherOrangeDark" href="{{Domain.Offer.UpgradeUrl}}">Go to offer</a>
+            </p>
+        </div>
+
+        <h1 class="pull-left">{{Domain.DomainNameUnicode}}</h1>
+
+        <div class="pull-right paddingTop10">
+            <a href data-scroll-to="keywords" class="paddingRight15">Keywords ({{ Domain.TotalKeywords }})</a>
+            <a href data-scroll-to="competitors">Competitors ({{ Domain.Competitors.length }})</a>
+        </div>
+        <hr style="clear: both;">
+
+
+        <div data-ng-if="Domain.Expired">
+            <p class="red">
+                Your trial account has expired, therefore no more ranking data can be displayed. Continue to track your keywords and competitors by upgrading your account.
+            </p>
+            <p>
+                <a class="red font-weight-bold underline" href="javascript:void(0)" data-ng-click="upgrade_now()" class="font-weight-bold-600">Go to upgrade account page</a>
+            </p>
+            <div data-ng-if="accountUpgradeErrorMessage != null" class="alert alert-danger activateErrorMessage">{{accountUpgradeErrorMessage}}</div>
+        </div>
+
+        <div data-ng-hide="Domain.Expired">
+
+            <div data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
+                <h2 class="marginBottom5">Free account - weekly ranking updates <span class="font-weight-normal">(Monday)</span></h2>
+                <p class="marginBottom30">
+                    Get <b>daily</b> ranking updates and <b>time span functionality</b> in PRO account
+
+                    <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
+                    <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
+                </p>
+            </div>
+            <div data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="form-inline-groups"  >
+
+                <div class="form-group" style="width: 300px; ">
+                    <label>Ranking data period</label>
+                    <select data-ng-change="refreshPageGraph()" style="width: 250px;" class="pull-left ranking_data_period_selector" data-ng-model="Domain.Request.GraphInterval" ng-options="interval.Value as dict[interval.Text] for interval in Domain.GraphIntervals"></select>
+
+                    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop10 pull-left " data-ng-show="pageLoading" alt="loading" />
+                </div>
+            </div>
+
+            <img alt="loading" class="preloader ng-hide" data-ng-show="!Trend" data-ng-src="{{config.BASE_PATH}}images/preloader50.gif">
+            <div class="trends-presentation" data-ng-show="Trend">
+                <ul>
+                    <li>
+                        <div data-ng-hide="Trend.Overall.Valid === true">
+                            <span class="center-block keyword-description text-capitalize">{{ dict.x_total }}</span>
+                            <h3>n/a</h3>
+                            <a class="invisible" href="">hidden</a>
+                        </div>
+                                <span data-ng-show="Trend.Overall.Valid === true">
+                                    <span class="center-block keyword-description text-capitalize">{{ dict.x_total }}</span>
+                                    <h3 data-ng-class="{true: 'paddingLeft30', false: ''}[Trend.Overall.Value == 0]">{{ Trend.Overall.StringValue }} <span class="icon-large" data-ng-class="trendClass(Trend.Overall.Value)"></span>
+                                    </h3>
+                                    <span class="center-block keyword-description font-weight-bold">{{dict.x_on_all_keywords}}</span>
+                                </span>
+                    </li>
+                    <li>
+                        <div data-ng-hide="Trend.Best.Valid === true">
+                            <span class="center-block keyword-description text-capitalize">{{ dict.x_best }}</span>
+                            <h3>n/a</h3>
+                            <a class="invisible" href="">hidden</a>
+                        </div>
+                                <span data-ng-show="Trend.Best.Valid === true">
+                                    <span class="center-block keyword-description text-capitalize">{{ dict.x_best }}</span>
+                                    <h3 data-ng-class="{true: 'paddingLeft30', false: ''}[Trend.Best.Value == 0]">{{ Trend.Best.StringValue }} <span class="icon-large" data-ng-class="trendClass(Trend.Best.Value)"></span></h3>
+                                    <span class="keyword-description ">{{dict.x_on}} <a data-ng-click="keywordChartPopup(Trend.Best.KeywordName)" href="">{{ Trend.Best.KeywordName }} </a></span>
+                                </span>
+                    </li>
+                    <li>
+                        <div data-ng-hide="Trend.SecondBest.Valid === true">
+                            <span class="center-block keyword-description text-capitalize">{{ dict.x_2nd_best }}</span>
+                            <h3>n/a</h3>
+
+                            <a class="invisible" href="">hidden</a>
+                        </div>
+                                <span data-ng-show="Trend.SecondBest.Valid === true">
+                                    <span class="center-block keyword-description text-capitalize">{{ dict.x_2nd_best }}</span>
+                                    <h3 data-ng-class="{true: 'paddingLeft30', false: ''}[Trend.SecondBest.Value == 0]">{{ Trend.SecondBest.StringValue }} <span class="icon-large" data-ng-class="trendClass(Trend.SecondBest.Value)"></span></h3>
+                                    <span class="keyword-description font-weight-bold">{{dict.x_on}} <a data-ng-click="keywordChartPopup(Trend.SecondBest.KeywordName)" href="">{{ Trend.SecondBest.KeywordName }}  </a></span>
+                                </span>
+
+                    </li>
+                    <li>
+                        <div data-ng-hide="Trend.Worst.Valid === true">
+                            <span class="center-block keyword-description text-capitalize">{{ dict.x_worst }}</span>
+                            <h3>n/a</h3>
+                            <a class="invisible" href="">hidden</a>
+                        </div>
+                                <span class="center-block text-capitalize" data-ng-show="Trend.Worst.Valid === true">
+                                    <span class="keyword-description text-capitalize">{{ dict.x_worst }}</span>
+                                    <h3 data-ng-class="{true: 'paddingLeft30', false: ''}[Trend.Worst.Value == 0]">{{ Trend.Worst.StringValue }} <span class="icon-large" data-ng-class="trendClass(Trend.Worst.Value)"></span></h3>
+                                    <span class="keyword-description font-weight-bold">{{dict.x_on}} <a data-ng-click="keywordChartPopup(Trend.Worst.KeywordName)" href="">{{ Trend.Worst.KeywordName }}</a></span>
+                                </span></li>
+                </ul>
+            </div>
+
+            <div class="form-inline-groups">
+                <div class="form-group" style="width: 300px;">
+                    <label class="text-capitalize">Filter graph and table by keyword</label>
+                    <select data-ng-change="refreshPageGraph()" style="width: 250px;" class="pull-left" data-ng-model="Domain.Request.SelectedAccountDomainKeywordId" data-ng-options="k.UserDomainKeywordId as k.KeywordName for k in Keywords">
+                        <option value="">-- {{ dict.x_all }} --</option>
+                    </select>
+                    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop10 pull-left " data-ng-show="pageLoading" alt="loading" />
+                </div>
+
+                <div class="pull-right  hidden" data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'">
+                    <label class="text-capitalize">{{ dict.x_select_date_range }}</label>
+
+                    <select data-ng-change="refreshPageGraph()" data-ng-model="Domain.Request.GraphInterval">
+                        <option data-ng-selected="{{interval.Value == Domain.Request.GraphInterval}}" ng-repeat="interval in Domain.GraphIntervals" value="{{interval.Value}}">{{ dict[interval.Text] }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="chartBox" style="min-width: 100% !important; width: 100% !important;">
+                <img data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" data-ng-show="chartLoading" class="preloader marginBottom10" alt="loading" />
+                <div style="min-width: 100%; width: 100%;" class="chart" data-ng-hide="chartLoading" data-ng-bind-html="chart"></div>
+
+                <amchart amgraphs="amgraphs" amdata="amdata" data-ng-hide="chartLoading" high="0" chartid="1"></amchart>
+
+                <div class="chartBoxFooter clearfix">
+                    <div style="float: left; padding-bottom: 8px;">
+                        <a href="" data-ng-click="domainChartZoomPopup()" class="btn-link  no-underline">
+                            <img alt="zoom chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/ZoomIcon_Gray.png" /><span class="text-capitalize"> Zoom</span></a>
+                        <a analytics-on analytics-event="graph" analytics-category="send" data-ng-click="sendGraphPopup()" href="" class="btn-link  no-underline">
+                            <img alt="send chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/SendIcon_Gray.png" /><span class="text-capitalize"> {{ dict.x_send_graph }}</span></a>
+                    </div>
+                    <div style="float: left; padding-left: 20px;">
+                        <span data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="pull-right">
+                            <a analytics-on analytics-event="ranking_csv" analytics-category="download" data-ng-click="downloadCSV()" class="btn-link  no-underline">
+                                <img alt="Download CSV" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/DownloadIcon_Gray.png" />{{ dict.x_csv }}</a>
+                            <a analytics-on analytics-event="ranking_pdf" analytics-category="download" data-ng-click="downloadPDF()" class="btn-link  no-underline">
+                                <img alt="Download PDF" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/DownloadIcon_Gray.png" />{{ dict.x_pdf }}</a>
+                            <a href="" data-ng-click="autoReportPopup()" target="_blank" class="btn-link no-underline">
+                                <img alt="Created auto report" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/ReportSettingsIcon_Gray.png" />Auto report</a>
+                        </span>
+                        <span data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'" class="pull-right">
+                            <p><b>Data export</b>, <b>PDF</b> and <b>auto reports</b> available in PRO account.
+
+                                <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
+                                <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
+                            </p>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <br />
+            <div data-ng-if="keywordErrorMessage != null" class="alert alert-danger">{{ keywordErrorMessage }}</div>
+            <div data-ng-if="keywordSuccessMessage != null" class="alert alert-success">{{ keywordSuccessMessage }}</div>
+
+            <a class="anchor" id="keywords"></a>
+
+            <form name="addKeywordForm" class="form-inline-groups" data-ng-submit="createKeyword()">
+                <div class="  pull-left">
+                    <div class="form-group">
+                        <label>{{dict.x_add_keyword}}</label>
+                        <input type="text" class="form-control" data-ng-model="keywordForm.newKeyword" />
+                    </div>
+                    <button type="submit" class="btn-alternative" data-ng-disabled="addingKeywordLoading"><span class="icon-large wi-plus"></span>{{dict.x_add}}</button>
+                    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="addingKeywordLoading" alt="loading" />
+                    <a data-ng-hide="model.AddingDisabled || Domain.AccountTypeIdentifier == 'PACKAGE_FREE'" class="font-weight-bold no-underline paddingLeft30" href="" data-ng-click="bulkInsert()">+ <span class="underline">Bulk import</span></a>
+                </div>
+                <div class="pull-right">
+                    <div>
+                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingTop33 paddingRight10 pull-left" data-ng-show="pageLoading" alt="loading" />
+                        <div style="display: block;" class="pull-right">
+                            <label class="text-right display-block">Keywords per page</label>
+                            <select style="width: 120px;" class="pull-right display-block" data-ng-change="reload(true, 1,resultsPerPage)" data-ng-model="Domain.Request.ResultsPerPage">
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 10}}" value="10">10</option>
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 20}}" value="20">20</option>
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 50}}" value="50">50</option>
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 100}}" value="100">100</option>
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 200}}" value="200">200</option>
+                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 400}}" value="400">400</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <br />
+            <div class="floatclear"></div>
+            <br />
+            <br />
+            <table class="table-striped">
+                <thead>
+                <tr>
+                    <th class="text-capitalize">
+                        <a href="" ng-click=" reload(false, 1, resultsPerPage, 'k.KeywordName')">Keyword</a>
+                    </th>
+                    <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
+                        <a href="" ng-click="reload(false, 1, resultsPerPage,'adk.RankingPath')">Ranking path</a>
+                    </th>
+                    <th class="text-capitalize">
+                        <a href="" ng-click="reload(false, 1, resultsPerPage,'adk.LastRank')">{{ dict.x_position }}</a>
+                    </th>
+                    <th class="text-capitalize" colspan="2">
+                        <a href="" ng-click="reload(false, 1, resultsPerPage,'Change')">Change</a>
+                    </th>
+                    <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
+                        <a href="" ng-click="reload(false, 1, resultsPerPage,'ks.LocalSearches')">Searches</a>
+                    </th>
+                    <!--
+                        <th class="text-capitalize hide-if-mobile">
+                            <a href="" ng-click="orderByField='Rank.Date'; reverseSort = !reverseSort">Updated</a>
+                        </th>-->
+                    <th class="auto-width"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="keyword in Domain.Keywords">
+                    <td><a href="" style="color: #000;" class="font-weight-bold-600" data-ng-click="keywordChartZoomPopup(keyword.KeywordName)">{{ keyword.KeywordName }}</a></td>
+
+
+                    <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-overflow-ellipsis-200"><a href="" class="a-text-style" title="{{ keyword.Rank.Href }}">{{ keyword.Rank.Href }}</a> </td>
+                    <td>
+                        <span data-ng-if="keyword.Rank.Position == 101">100+</span>
+                        <span data-ng-if="keyword.Rank.Position < 101 && keyword.Rank.Position > 0"><a href="" data-ng-click="serpPopup(keyword.UserDomainKeywordId)">{{ keyword.Rank.Position }}</a></span>
+
+                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" style="margin-right:5px;" class="displayinline" data-ng-show="keyword.Rank.Spinner === true" alt="loading" />
+                        <i> <span class="small-black" data-ng-show="keyword.Rank.Text">{{ keyword.Rank.Text }}</span></i>
+
+
+                    </td>
+                    <td style="width: 20px;">{{ keyword.Change }}</td>
+
+                    <td><span class="icon-small" data-ng-class="trendClass(keyword.Change) + '-small'"></span></td>
+                    <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" style="width: 20px;">{{ keyword.LocalSearches }}</td>
+                    <!--
+                        <td class="hide-if-mobile">{{ keyword.Rank.Date  | date : 'mediumDate'  }}</td>
+                        -->
+                    <td>
+                        <a data-ng-click="deleteKeywordConfirm(keyword.UserDomainKeywordId)" href="">
+                            <img alt="remove keyword" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngBlack/RemoveIcon_Black.png" />
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+
+            <div data-ng-show="(Domain.Request.ResultsPerPage < Domain.TotalKeywords) && !Domain.Request.SelectedAccountDomainKeywordId" data-pagination="" data-total-items="Domain.TotalKeywords" items-per-page="Domain.Request.ResultsPerPage" on-select-page="reload(false,page)" data-page="Domain.Request.Page" class="pull-left" max-size="5" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="First" last-text="Last"></div>
+            <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop5" data-ng-show="pageLoading" alt="loading" />
+
+            <p  data-ng-show="Domain.Keywords.length > 1" class="text-right">Showing  <b>{{  keywordsFrom }}</b>  -  <b>{{  keywordsTo }}</b> of  <b>{{ Domain.TotalKeywords }}</b></p>
+            <br />
+
+                        <span data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
+                           <p>Keyword <b>bulk import</b>, <b>ranking URL</b> and Google <b>searches</b> per keyword available in PRO account
+
+                                <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
+                                <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
+                           </p>
+                        </span>
+
+            <!--
+                <p>
+                    <a href="">Table settings</a>
+                </p>-->
+            <hr />
+
+            <br />
+            <h2 class="text-capitalize pull-left ">Successes and alerts</h2>
+
+            <div class="pull-right">
+                <span class="medium-small font-weight-bold">Tell the world</span>
+            </div>
+
+            <table>
+                <tbody>
+                    <tr data-ng-if="$index < 5" data-ng-repeat="success in LatestSuccesses">
+                        <th class="text-right auto-width paddingLeft10">
+                            <img data-ng-if="success.IsSuccess" data-ng-src="{{config.BASE_PATH}}images/Icon/StarIcon.png" />
+                            <img data-ng-if="success.IsAlert" data-ng-src="{{config.BASE_PATH}}images/Icon/AlertsIcon.png" />
+
+                        </th>
+                        <th>
+                            <span class="font-weight-normal" data-ng-bind-html="success.Text"></span>
+                            ({{ success.TriggerDate | date:'MMMM d'}})
+                        </th>
+                        <th class="text-right" style="min-width: 90px;">
+                                        <span data-ng-if="success.IsSuccess" >
+
+                                            <a class="no-underline" href="" data-ng-click="emailSharePopup(success.Id)">
+                                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/MailIcon.png" />
+                                            </a>
+
+                                            <a class="no-underline"  href="" data-ng-click="facebookShare(success.Id)">
+                                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" /></a>
+
+                                            <a class="no-underline"  href="" data-ng-click="twitterShare(success.Id)">
+                                                <img data-ng-src="{{config.BASE_PATH}}images/Icon/TwitterIcon.png" /></a>
+                                        </span>
+                        </th>
+                    </tr>
+                    <tr data-ng-if="LatestSuccesses.length == 0">
+                        <td>You don't have any alerts or successes yet.</td>
+                        <td class="text-right" style="width: 90px;">
+                            <img class="opticity40" data-ng-src="{{config.BASE_PATH}}images/Icon/MailIcon.png" />
+                            <img class="opticity40" data-ng-src="{{config.BASE_PATH}}images/Icon/FacebookIcon.png" />
+                            <img class="opticity40" data-ng-src="{{config.BASE_PATH}}images/Icon/TwitterIcon.png" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <a data-ng-if="LatestSuccesses.length > 5" class="" data-ng-click="rankingSuccessesPopup()" href="">View all</a>
+            <hr>
+
+            <div data-ng-if="competitorErrorMessage != null" class="alert alert-danger">{{ competitorErrorMessage }}</div>
+            <div data-ng-if="competitorSuccessMessage != null" class="alert alert-success">{{ competitorSuccessMessage }}</div>
+
+            <a class="anchor" id="competitors"></a>
+            <h2>{{dict.p_competitors_h1}} <span class="font-weight-normal">({{ Domain.Competitors.length }})</span></h2>
+
+            <p>
+                When you add a competitor you make it possible for Wincher to compare your rankings to your competitors.
+                When you are ranking better than your com petitors, or any competitor is passing your domain in the search results,
+                we will let you know.
+            </p>
+
+            <form class="form-inline-groups">
+                <div style="display: block;">
+                    <div class="form-group">
+                        <label>{{ dict.x_domain_to_monitor }}</label>
+                        <input type="text" id="Text1" data-ng-model="Domain.newCompetitorDomainName" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn-alternative" style="" data-ng-click="addCompetitor()"><span class="icon-large wi-plus"></span>{{ dict.x_add }} </button>
+                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small text-right" data-ng-show="addCompetitorLoading" alt="loading" />
+                    </div>
+                </div>
+            </form>
+            <table class="table-striped table-responsive">
+                <thead>
+                <tr>
+                    <th>{{ dict.x_competitor }} ({{ Domain.Competitors.length }})</th>
+                    <th class="auto-width"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="competitor in Domain.Competitors">
+                    <td>{{ competitor.DomainName }} </td>
+                    <td>
+                        <a data-ng-click="deleteCompetitor($index)" href="">
+                            <img data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngBlack/RemoveIcon_Black.png" />
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

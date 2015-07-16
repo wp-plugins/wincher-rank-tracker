@@ -1,0 +1,8 @@
+<div class="popup-content ">
+    <img data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" data-ng-show="chartLoading" class="preloader" alt="loading" />
+    <h1>{{ domainName }}</h1>
+    <div id="chartBoxPopup" style="min-width: 100%;">
+        <amchart amgraphs="amgraphs" amdata="amdata" data-ng-hide="chartLoading" high="1" chartid="2"></amchart>
+    </div>
+    <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+</div>

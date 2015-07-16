@@ -1,0 +1,12 @@
+<div class="popup-content text-center">
+    <img alt="loading" class="preloader ng-hide" data-ng-show="popupMainLoading" data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" style="margin-bottom:13px">
+    <div data-ng-show="!popupMainLoading">
+        <h1>Not verified</h1>
+        <p style="color:#d15600;"><strong>You have requested a verification link to</strong> <br /><span style="font-weight: normal">{{account_email}}</span><br /> <strong>but no verification has been done</strong></p>
+        <div data-ng-if="verifyErrorMessage != null" class="alert alert-danger">{{ verifyErrorMessage }}</div>
+        <p class="strong">You have 2 options:</p>
+        <p><a data-ng-click="resend()" href="">1. Resend verification link</a> <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupResendLoading" alt="loading" /></p>
+        <p>or</p>
+        <p><a data-ng-click="activation_reset()" href="">2. Activate account with other email <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupActivateLoading" alt="loading" /></a></p>
+    </div>
+</div>

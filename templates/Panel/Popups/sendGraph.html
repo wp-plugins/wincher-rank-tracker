@@ -1,0 +1,24 @@
+<div class="text-left">
+    <div class="popup-content white-popup-block">
+        <div data-ng-if="errorMessage != null" class="alert alert-danger">{{ errorMessage }}</div>
+        <div data-ng-if="successMessage != null" class="alert alert-success">{{ successMessage }}</div>
+        <h1 class="text-center">Share your rankings</h1>
+        <form data-ng-submit="send()">
+            <div class="form-group">
+                <label>Your name</label>
+                <input type="text" data-ng-model="form.fromName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="text-left">Send to (email)</label>
+                <input type="text" data-ng-model="form.sendTo" class="form-control">
+                <p class="small-grey paddingTop5 "><b>Note:</b> Use comma for multiple addresses.</p>
+            </div>
+            <button type="submit" class="center-block paddingLeft70 paddingRight70 btn-alternative">Send</button>
+
+            <div class="text-center center-block" data-ng-show="popupLoading" style="padding-top:10px">
+                <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif"  class="text-center center-block" alt="loading" />
+            </div>
+        </form>
+        <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+    </div>
+</div>

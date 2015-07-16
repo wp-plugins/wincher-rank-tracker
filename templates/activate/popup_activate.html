@@ -1,0 +1,58 @@
+<div class="popup-content text-center" style="padding-left:40px;">
+    <h1>Activate your ranking dashboard!</h1>
+    <p>Wincher need the following information to be able to provide you with the best <br /> and easiest ranking tool on the market</p>
+    <img alt="loading" class="preloader ng-hide" data-ng-show="popupMainLoading" data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" style="margin-bottom:13px">
+    <form class="form-horizontal clearfix" name="form" data-ng-show="!popupMainLoading">
+        <div data-ng-if="activateErrorMessage != null" class="alert alert-danger activateErrorMessage">
+            <span  data-ng-bind-html="activateErrorMessage"></span>
+            <span  data-ng-if="activateShowRequestPassword != null" ><br /><br /><a href="" data-ng-click="activate_next()">Send password link to email</a></span>
+            <span  data-ng-if="activateShowUpdate != null" ><br /><br /><a href="" data-ng-click="activate_next()">Upgrade now!</a></span>
+        </div>
+        <div data-ng-if="activateSuccessMessage != null" class="alert alert-success">{{ activateSuccessMessage }}</div>
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-6" style="height:70px;">
+                <label class="pull-left font-weight-normal" for="first_name"><strong>First name</strong></label>
+                <input class="form-control" type="text" name="first_name" id="first_name" data-ng-model="resource.first_name" data-ng-required="true" placeholder="First name"/>
+                <label for="first_name" class="pull-left label-warning" data-ng-show="!form.first_name.$pristine && form.first_name.$error.required">You must enter First name.</label>
+            </div>
+            <div class="col-xs-12 col-sm-6" style="height:70px; padding-left: 0px; padding-right:25px;">
+                <label class="pull-left font-weight-normal" for="last_name"><strong>Last name</strong></label>
+                <input class="form-control" type="text" name="last_name" id="last_name" data-ng-model="resource.last_name" data-ng-required="true" placeholder="Last name"/>
+                <label for="email" class="pull-left label-warning" data-ng-show="!form.last_name.$pristine && form.last_name.$error.required">You must enter Last name.</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-6" style="height:70px;">
+                <label class="pull-left font-weight-normal" for="email"><strong>Your email</strong></label>
+                <input class="form-control" type="text" name="email" id="email" data-ng-model="resource.email" data-ng-required="true" placeholder="Email"/>
+                <label for="email" class="pull-left label-warning" data-ng-show="!form.email.$pristine && form.email.$error.required">You must enter Email.</label>
+                <label for="email" class="pull-left label-warning" data-ng-show="!form.email.$pristine && form.email.$error.email">Please enter a valid e-mail address.</label>
+            </div>
+            <div class="col-xs-12 col-sm-6" style=" height:70px; padding-left: 0px; padding-right:25px;">
+                <label class="pull-left font-weight-normal" for="engine"><strong>Select search engine</strong></label>
+                <select style="width:100%;" id="engine" name="engine" data-ng-model="resource.engine" data-ng-required="true">
+                    <option data-ng-repeat="engine in engines" value="{{engine.Id}}">{{ engine.Name }}</option>
+                </select>
+                <label for="engine" class="pull-left label-warning" data-ng-show="!form.engine.$pristine && form.engine.$error.required">You must select Search Engine.</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-6">
+                <label class="pull-left font-weight-normal" for="keywords"><strong>Keywords to track</strong> (one per line)</label>
+                <textarea data-ng-model="resource.keywords" class="form-control" style="height: 135px;" name="keywords" id="keywords"></textarea>
+                <label for="keywords" class="pull-left label-warning" data-ng-show="!form.keywords.$pristine && form.keywords.$error.required">You must enter Keywords.</label>
+            </div>
+            <div class="col-xs-12 col-sm-6" style="padding-left: 0px; padding-right:25px;">
+                <label class="pull-left font-weight-normal" for="competitors"><strong>Your competitors domain</strong> (optional)</label>
+                <textarea data-ng-model="resource.competitors" class="form-control" style="height: 135px;" name="competitors" id="competitors"></textarea>
+            </div>
+        </div>
+    </form>
+    <div class="clearfix" style="padding-right:10px">
+        <button type="submit" data-ng-click="activate(form)" class="btn-alternative col-xs-12" style="font-size: 20px; padding: 9px 0" data-ng-disabled="form.$invalid">Activate!</button>
+        <!--<button type="submit" data-ng-click="cancel()" class="btn-alternative btn-cancel">Cancel</button>-->
+    </div>
+    <!--<button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>-->
+    <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="popupLoading" alt="loading" style="margin:5px 0 0 -12px;" />
+    <div class="tac">By submitting this form, you garanities that you have read and confirmed our <a href="https://www.wincher.com/privacypolicy" target="_blank">Terms and Conditions.</a></div>
+</div>
