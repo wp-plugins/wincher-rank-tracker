@@ -79,6 +79,7 @@ function init() {
         wp_register_script('autoreport-service', plugins_url('/js/services/autoreport-service.js', __FILE__) );
         wp_register_script('user-service', plugins_url('/js/services/user-service.js', __FILE__) );
         wp_register_script('account-service', plugins_url('/js/services/account-service.js', __FILE__) );
+        wp_register_script('group-search-factory', plugins_url('/js/services/group-search-factory.js', __FILE__) );
 
         wp_register_style( 'bootstrap', plugins_url('/css/bootstrap.css', __FILE__) );
         wp_register_style( 'datepicker', plugins_url('/css/datepicker.css', __FILE__) );
@@ -113,6 +114,7 @@ function init() {
         wp_enqueue_script('autoreport-service');
         wp_enqueue_script('user-service');
         wp_enqueue_script('account-service');
+        wp_enqueue_script('group-search-factory');
 
 
         wp_enqueue_style('bootstrap');

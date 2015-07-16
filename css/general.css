@@ -2706,6 +2706,7 @@ h1 .header-domain:after {
 @media (max-width: 730px) {
     .trends-presentation ul li {
         width: 50%;
+        min-height: 150px;
         padding: 20px 10px;
     }
 

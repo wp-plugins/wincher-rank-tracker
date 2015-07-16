@@ -1,17 +1,45 @@
 <div class="popup-content ">
     <div data-ng-if="uploadError != null" class="alert alert-danger">{{ uploadError }}</div>
     <h1 class="text-center">Auto report</h1>
-    <br/>
+    <br />
 
     <form data-ng-submit="post()">
         <div class="form-group">
             <label class="text-left paddingBottom10">Interval</label>
             <div>
-                <input type="radio" id="vatRadioYes" data-ng-model="model.SendInterval" data-ng-value="0"/>
+
+                <!--
+                    <input type="radio" data-ng-model="model.SendInterval" data-ng-value="2" />
+                    <label class="font-weight-normal">Daily</label>
+
+                <input type="radio" id="vatRadioYes" data-ng-model="model.SendInterval" data-ng-value="0" style="margin-left: 0px;" />
                 <label class="font-weight-normal">Weekly</label>
-                <input type="radio" id="vatRadioNo" data-ng-model="model.SendInterval" data-ng-value="1" style="margin-left: 20px;"/>
-                <label class="font-weight-normal">Monthly</label>
+                <input type="radio" id="vatRadioNo" data-ng-model="model.SendInterval" data-ng-value="1" style="margin-left: 20px;" />
+                <label class="font-weight-normal">Monthly</label>   -->
             </div>
+
+            <span class="wincher-radio">
+                <input id="vatRadioYes" class="wincher-radio" type="radio" name="interval" data-ng-model="model.SendInterval" data-ng-value="0" />
+                <label for="vatRadioYes" class="marginRight20"></label>
+            </span>
+            <label class="radio-checkbox-label marginRight20" data-ng-click="model.SendInterval = 0;">Weekly</label>
+
+            <span class="wincher-radio">
+                <input id="vatRadioNo" class="wincher-radio" type="radio" name="interval" data-ng-model="model.SendInterval" data-ng-value="1" />
+                <label for="vatRadioNo"></label>
+            </span>
+            <label class="radio-checkbox-label" data-ng-click="model.SendInterval = 1;">Monthly</label>
+
+        </div>
+
+        <div class="form-group">
+            <label>Keywords</label>
+
+            <select data-ng-model="model.Filter" data-ng-options="k.Text group by dict['keywordfilter_' + k.Type] for k in model.FilterOptions">
+                <option value="">-- All --</option>
+            </select>
+
+
         </div>
         <div class="form-group" data-ng-if="model.SendInterval == 0">
             <label>Day of week to send report</label>
@@ -31,20 +59,21 @@
         <div class="form-group">
             <label>Send to (email)</label>
             <input type="text" data-ng-model="model.SendTo" class="form-control">
-            <p class="small-grey paddingTop5 ">
-                <b>Note:</b> Use comma for multiple addresses</p>
+            <p class="small-grey paddingTop5 "><b>Note:</b> Use comma for multiple addresses</p>
         </div>
 
         <div class="form-group">
             <label>Logo <span class="font-weight-normal">(optional)</span></label>
-            <br /><br />
+            <br />
+
+            <br />
 
             <input type="file" data-ng-file-select="onFileSelect($files)">
 
             <br />
 
             <div data-ng-if="model.LogoId">
-                <img alt="logo" data-ng-src="{{model.logoUrl}}" height="50"/>
+                <img alt="logo" data-ng-src="{{model.logoUrl}}" height="50" />
             </div>
 
             <br />
@@ -56,10 +85,7 @@
             <label class="font-weight-normal">Enabled</label>
         </div>
 
-        <button type="submit" class="center-block paddingLeft70 paddingRight70 btn-alternative">
-            <span data-ng-if="model.Id">Save</span>
-            <span data-ng-if="!model.Id">Activate</span>
-        </button>
+        <button type="submit" class="center-block paddingLeft70 paddingRight70 btn-alternative"><span data-ng-if="model.Id">Save</span><span data-ng-if="!model.Id">Activate</span></button>
 
         <div class="text-center center-block" data-ng-show="popupLoading">
             <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="text-center center-block" alt="loading"/>

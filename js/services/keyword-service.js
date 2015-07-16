@@ -74,7 +74,7 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
         })
     };
 
-    var createKeyword = function (userDomainId, keywordName) {
+    var createKeyword = function (userDomainId, keywordName, groups) {
 
         var deferred = $q.defer();
 
@@ -83,7 +83,8 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
             action: "angular_proxy",
             type: "add_keyword",
             AccountDomainId: userDomainId,
-            Keyword: encodeURIComponent(keywordName)
+            Keyword: encodeURIComponent(keywordName),
+            Groups: encodeURIComponent(groups)
         };
 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
@@ -115,16 +116,15 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
         })
     };
 
-    var createBulk = function (userDomainId, keywords) {
+    var getAllGroups = function (accountDomainId) {
 
         var deferred = $q.defer();
 
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
-            type: "add_keyword_bulk",
-            AccountDomainId: userDomainId,
-            Keywords: encodeURIComponent(keywords)
+            type: "keywordgroup_all",
+            accountDomainId: accountDomainId
         };
 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
@@ -142,13 +142,121 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
         return deferred.promise;
     };
 
-    var deleteUserDomainKeyword = function (userDomainKeywordId, callback) {
+    var addGroupToKeyword = function (accountDomainKeywordId, name) {
+
+        var deferred = $q.defer();
 
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
-            type: "delete_keyword",
-            Id: userDomainKeywordId
+            type: "keywordgroup_add",
+            accountDomainKeywordId: accountDomainKeywordId,
+            name: name
+        };
+
+        $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .success(function (data, status, headers, config) {
+                var results = [];
+                results.data = data;
+                results.headers = headers();
+                results.status = status;
+                results.config = config;
+                deferred.resolve(results);
+            }).error(function (data, status, headers, config) {
+                deferred.reject(data, status, headers, config);
+            });
+
+        return deferred.promise;
+    };
+
+    var removeKeywordFromGroup = function (accountDomainKeywordId, groupId) {
+
+        var deferred = $q.defer();
+
+        var params = {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: "angular_proxy",
+            type: "keywordgroup_delete",
+            accountDomainKeywordId: accountDomainKeywordId,
+            groupId: groupId
+        };
+
+        $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .success(function (data, status, headers, config) {
+                var results = [];
+                results.data = data;
+                results.headers = headers();
+                results.status = status;
+                results.config = config;
+                deferred.resolve(results);
+            }).error(function (data, status, headers, config) {
+                deferred.reject(data, status, headers, config);
+            });
+
+        return deferred.promise;
+    };
+
+    var getKeywordFilterList = function (accountDomainId) {
+
+        var deferred = $q.defer();
+
+        var params = {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: "angular_proxy",
+            type: "keywordgroup_filteroptions",
+            accountDomainId: accountDomainId
+        };
+
+        $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .success(function (data, status, headers, config) {
+                var results = [];
+                results.data = data;
+                results.headers = headers();
+                results.status = status;
+                results.config = config;
+                deferred.resolve(results);
+            }).error(function (data, status, headers, config) {
+                deferred.reject(data, status, headers, config);
+            });
+
+        return deferred.promise;
+    };
+
+    var createBulk = function (userDomainId, keywords, groups) {
+
+        var deferred = $q.defer();
+
+        var params = {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: "angular_proxy",
+            type: "add_keyword_bulk",
+            AccountDomainId: userDomainId,
+            Keywords: encodeURIComponent(keywords),
+            Groups: encodeURIComponent(groups)
+        };
+
+        $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+            .success(function (data, status, headers, config) {
+                var results = [];
+                results.data = data;
+                results.headers = headers();
+                results.status = status;
+                results.config = config;
+                deferred.resolve(results);
+            }).error(function (data, status, headers, config) {
+                deferred.reject(data, status, headers, config);
+            });
+
+        return deferred.promise;
+    };
+
+    var bulkDelete = function (ids, callback) {
+
+        var params = {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: "angular_proxy",
+            type: "delete_keyword_bulk",
+            ids: ids
         };
 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
@@ -175,7 +283,11 @@ angular.module('app').service('keywordService', ['$http', '$upload', '$q', '$fil
         uploadFile:uploadFile,
         track: track,
         createBulk:createBulk,
-        deleteUserDomainKeyword: deleteUserDomainKeyword
+        addGroupToKeyword: addGroupToKeyword,
+        removeKeywordFromGroup: removeKeywordFromGroup,
+        getKeywordFilterList: getKeywordFilterList,
+        getAllGroups: getAllGroups,
+        bulkDelete: bulkDelete
     };
 }]);
 

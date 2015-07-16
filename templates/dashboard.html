@@ -10,7 +10,7 @@
 
         <div class="discount-offer" data-ng-if="Domain.Offer">
 
-            <h2 class="marginBottom5">{{Domain.Offer.FirstName }}, we have a great introduction offer to you!
+            <h2 class="marginBottom5">{Domain.Offer.Headline }}
             </h2>
             <p>
                 Get Wincher PRO with <b class="wincherOrangeDark">{{Domain.Offer.Percentage * 100}}%</b> discount for <b class="wincherOrangeDark">{{ Domain.Offer.MaxUsage }} months</b>. It's lime limited and you have <b>{{ Domain.Offer.DaysLeftText }}</b> left to claim the offer.
@@ -21,8 +21,8 @@
 
         <h1 class="pull-left">{{Domain.DomainNameUnicode}}</h1>
 
-        <div class="pull-right paddingTop10">
-            <a href data-scroll-to="keywords" class="paddingRight15">Keywords ({{ Domain.TotalKeywords }})</a>
+        <div class="pull-right paddingTop10" data-ng-show="Domain.TotalKeywords > 0">
+        <a href data-scroll-to="keywords" class="paddingRight15">Keywords ({{ Domain.TotalKeywords }})</a>
             <a href data-scroll-to="competitors">Competitors ({{ Domain.Competitors.length }})</a>
         </div>
         <hr style="clear: both;">
@@ -40,7 +40,7 @@
 
         <div data-ng-hide="Domain.Expired">
 
-            <div data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
+            <div data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE' && Domain.TotalKeywords > 0">
                 <h2 class="marginBottom5">Free account - weekly ranking updates <span class="font-weight-normal">(Monday)</span></h2>
                 <p class="marginBottom30">
                     Get <b>daily</b> ranking updates and <b>time span functionality</b> in PRO account
@@ -49,7 +49,7 @@
                     <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
                 </p>
             </div>
-            <div data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="form-inline-groups"  >
+            <div data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE' && Domain.TotalKeywords > 0" class="form-inline-groups clearfix">
 
                 <div class="form-group" style="width: 300px; ">
                     <label>Ranking data period</label>
@@ -60,7 +60,7 @@
             </div>
 
             <img alt="loading" class="preloader ng-hide" data-ng-show="!Trend" data-ng-src="{{config.BASE_PATH}}images/preloader50.gif">
-            <div class="trends-presentation" data-ng-show="Trend">
+            <div class="trends-presentation clearfix" data-ng-show="Trend && Domain.TotalKeywords > 0">
                 <ul>
                     <li>
                         <div data-ng-hide="Trend.Overall.Valid === true">
@@ -115,43 +115,47 @@
                 </ul>
             </div>
 
-            <div class="form-inline-groups">
-                <div class="form-group" style="width: 300px;">
-                    <label class="text-capitalize">Filter graph and table by keyword</label>
-                    <select data-ng-change="refreshPageGraph()" style="width: 250px;" class="pull-left" data-ng-model="Domain.Request.SelectedAccountDomainKeywordId" data-ng-options="k.UserDomainKeywordId as k.KeywordName for k in Keywords">
-                        <option value="">-- {{ dict.x_all }} --</option>
+            <div class="form-inline-groups" data-ng-show="Domain.TotalKeywords > 0">
+                <div class="form-group" style="width: 250px;">
+                    <label class="text-capitalize">Filter graph and table</label>
+                    <select data-ng-change="refreshPageGraph()" style="width: 250px;" class="pull-left" data-ng-model="Domain.Request.Filter" data-ng-options="k.Text group by dict['keywordfilter_' + k.Type] for k in filterOptions">
+                        <option value="">-- All --</option>
+                    </select>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="form-group" style="width: 160px;">
+                    <label class="text-capitalize"></label>
+                    <select data-ng-change="refreshPageGraph()" style="width: 125px;" class="pull-left" data-ng-model="Domain.Request.GraphHeight">
+                        <option value="0">Auto</option>
+                        <option value="10">Top 10</option>
+                        <option value="30">Top 30</option>
+                        <option value="50">Top 50</option>
+                        <option value="70">Top 70</option>
+                        <option value="101">Top 100</option>
                     </select>
                     <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop10 pull-left " data-ng-show="pageLoading" alt="loading" />
-                </div>
-
-                <div class="pull-right  hidden" data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'">
-                    <label class="text-capitalize">{{ dict.x_select_date_range }}</label>
-
-                    <select data-ng-change="refreshPageGraph()" data-ng-model="Domain.Request.GraphInterval">
-                        <option data-ng-selected="{{interval.Value == Domain.Request.GraphInterval}}" ng-repeat="interval in Domain.GraphIntervals" value="{{interval.Value}}">{{ dict[interval.Text] }}
-                        </option>
-                    </select>
+                    <div class="clearfix"></div>
                 </div>
             </div>
 
-            <div class="chartBox" style="min-width: 100% !important; width: 100% !important;">
-                <img data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" data-ng-show="chartLoading" class="preloader marginBottom10" alt="loading" />
+            <div class="chartBox" style="min-width: 100% !important; width: 100% !important;" data-ng-show="Domain.TotalKeywords > 0">
+            <img data-ng-src="{{config.BASE_PATH}}images/preloader50.gif" data-ng-show="chartLoading" class="preloader marginBottom10" alt="loading" />
                 <div style="min-width: 100%; width: 100%;" class="chart" data-ng-hide="chartLoading" data-ng-bind-html="chart"></div>
 
-                <amchart amgraphs="amgraphs" amdata="amdata" data-ng-hide="chartLoading" high="0" chartid="1"></amchart>
+                <amchart amgraphs="amgraphs" amdata="amdata" amheight="Domain.Request.GraphHeight" data-ng-hide="chartLoading" high="0" chartid="1"></amchart>
 
                 <div class="chartBoxFooter clearfix">
-                    <div style="float: left; padding-bottom: 8px;">
-                        <a href="" data-ng-click="domainChartZoomPopup()" class="btn-link  no-underline">
-                            <img alt="zoom chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/ZoomIcon_Gray.png" /><span class="text-capitalize"> Zoom</span></a>
-                        <a analytics-on analytics-event="graph" analytics-category="send" data-ng-click="sendGraphPopup()" href="" class="btn-link  no-underline">
-                            <img alt="send chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/SendIcon_Gray.png" /><span class="text-capitalize"> {{ dict.x_send_graph }}</span></a>
-                    </div>
-                    <div style="float: left; padding-left: 20px;">
+                    <a href="" data-ng-click="domainChartZoomPopup()" class="btn-link  no-underline">
+                        <img alt="zoom chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/ZoomIcon_Gray.png" /><span class="text-capitalize"> Zoom</span></a>
+                    <a analytics-on analytics-event="graph" analytics-category="send" data-ng-click="sendGraphPopup()" href="" class="btn-link  no-underline">
+                        <img alt="send chart" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/SendIcon_Gray.png" /><span class="text-capitalize"> {{ dict.x_send_graph }}</span></a>
+
                         <span data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="pull-right">
-                            <a analytics-on analytics-event="ranking_csv" analytics-category="download" data-ng-click="downloadCSV()" class="btn-link  no-underline">
+                            <a data-ng-click="downloadSimpleCSV()" class="btn-link  no-underline">
+                                <img alt="Download CSV" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/DownloadIcon_Gray.png" />Simple CSV</a>
+                            <a data-ng-click="downloadCSV()" class="btn-link  no-underline">
                                 <img alt="Download CSV" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/DownloadIcon_Gray.png" />{{ dict.x_csv }}</a>
-                            <a analytics-on analytics-event="ranking_pdf" analytics-category="download" data-ng-click="downloadPDF()" class="btn-link  no-underline">
+                            <a data-ng-click="pdfReportPopup()" class="btn-link  no-underline">
                                 <img alt="Download PDF" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/DownloadIcon_Gray.png" />{{ dict.x_pdf }}</a>
                             <a href="" data-ng-click="autoReportPopup()" target="_blank" class="btn-link no-underline">
                                 <img alt="Created auto report" class="paddingRight10" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngGray/ReportSettingsIcon_Gray.png" />Auto report</a>
@@ -163,7 +167,6 @@
                                 <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
                             </p>
                         </span>
-                    </div>
                 </div>
 
             </div>
@@ -173,100 +176,193 @@
 
             <a class="anchor" id="keywords"></a>
 
+            <p data-ng-hide="Domain.TotalKeywords > 0">
+                Please add at least one keyword to get access to your ranking data.
+                Additional keywords can be added at any time after this.
+            </p>
+
             <form name="addKeywordForm" class="form-inline-groups" data-ng-submit="createKeyword()">
-                <div class="  pull-left">
+                <div class="pull-left">
                     <div class="form-group">
-                        <label>{{dict.x_add_keyword}}</label>
+                        <label>Add keyword</label>
                         <input type="text" class="form-control" data-ng-model="keywordForm.newKeyword" />
                     </div>
-                    <button type="submit" class="btn-alternative" data-ng-disabled="addingKeywordLoading"><span class="icon-large wi-plus"></span>{{dict.x_add}}</button>
+                    <div class="form-group keywo222rd-group-add" data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'">
+                        <label>Assign to group <span class="font-weight-500">(optional)</span> </label>
+                        <group-search class="form-group" groups="Domain.KeywordGroups" ng-model="keywordForm.newGroup" auto-submit="false" account-domain-id="Domain.Request.AccountDomainId" />
+                    </div>
+                    <button type="submit" class="btn-orange" data-ng-disabled="addingKeywordLoading"><span class="icon-large wi-plus"></span>{{dict.x_add}}</button>
                     <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="preloader-small" data-ng-show="addingKeywordLoading" alt="loading" />
-                    <a data-ng-hide="model.AddingDisabled || Domain.AccountTypeIdentifier == 'PACKAGE_FREE'" class="font-weight-bold no-underline paddingLeft30" href="" data-ng-click="bulkInsert()">+ <span class="underline">Bulk import</span></a>
                 </div>
-                <div class="pull-right">
+            </form>
+
+            <br />
+            <div class="floatclear"></div>
+
+            <a data-ng-hide="model.AddingDisabled || Domain.AccountTypeIdentifier == 'PACKAGE_FREE'" class="display-inline-block font-weight-bold no-underline paddingTop10" href="" data-ng-click="bulkInsert()">+ <span class="underline">Bulk import</span></a>
+
+            <div data-ng-show="Domain.TotalKeywords > 0">
+
+                <p class="pull-left paddingTop33" data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
+                    <b>Keyword grouping</b> available in PRO account.
+                    <a analytics-on data-ng-if="Domain.Offer != null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Get {{ Domain.Offer.Percentage * 100 }}% discount now!</a>
+                    <a analytics-on data-ng-if="Domain.Offer == null" class="wincherOrangeDark" href="javascript:void(0)" data-ng-click="upgrade_now()">Upgrade now!</a>
+
+                </p>
+                <br />
+                <br />
+                <div class="pull-left" style="padding-top: 0px;" data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'">
+
+                    <!--  <input id="rankingsView" style="margin-top: -8px; vertical-align: middle;" type="radio" name="editGroupsMode" data-ng-model="editGroupsMode" data-ng-value="false" />
+                     <label for="rankingsView" class="marginRight20">Rankings</label>
+                     <input id="groupsView" style="margin-top: -8px; vertical-align: middle;" type="radio" name="editGroupsMode" data-ng-model="editGroupsMode" data-ng-value="true" />
+                     <label for="groupsView">Groups</label>
+                        -->
+
+
+
+
+
+                        <span class="wincher-radio">
+                            <input id="rankingsView" class="wincher-radio" type="radio" name="editGroupsMode" data-ng-model="editGroupsMode" data-ng-value="false" />
+                            <label for="rankingsView" class="marginRight20"></label>
+                        </span>
+                    <label class="radio-checkbox-label marginRight20" data-ng-click="editGroupsMode = false;">Rankings</label>
+                        <span class="wincher-radio">
+                            <input id="groupsView" class="wincher-radio" type="radio" name="editGroupsMode" data-ng-model="editGroupsMode" data-ng-value="true" />
+                            <label for="groupsView"></label>
+                        </span>
+                    <label class="radio-checkbox-label" data-ng-click="editGroupsMode = true;">Groups</label>
+
+
+
+
+                </div>
+                <div class="pull-right block-if-mobile">
                     <div>
-                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingTop33 paddingRight10 pull-left" data-ng-show="pageLoading" alt="loading" />
+                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingTop10 paddingRight10 pull-left" data-ng-show="pageLoading" alt="loading" />
                         <div style="display: block;" class="pull-right">
-                            <label class="text-right display-block">Keywords per page</label>
-                            <select style="width: 120px;" class="pull-right display-block" data-ng-change="reload(true, 1,resultsPerPage)" data-ng-model="Domain.Request.ResultsPerPage">
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 10}}" value="10">10</option>
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 20}}" value="20">20</option>
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 50}}" value="50">50</option>
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 100}}" value="100">100</option>
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 200}}" value="200">200</option>
-                                <option data-ng-selected="{{Domain.Request.ResultsPerPage == 400}}" value="400">400</option>
+                            <select style="width: 150px;" data-ng-model="Domain.selectedbulkAction" data-ng-change="bulkDeleteKeywords()">
+                                <option value="">-- Bulk action --</option>
+                                <option value="delete">Delete selected</option>
                             </select>
                         </div>
                     </div>
                 </div>
-            </form>
-            <br />
+            </div>
             <div class="floatclear"></div>
             <br />
-            <br />
-            <table class="table-striped">
-                <thead>
-                <tr>
-                    <th class="text-capitalize">
-                        <a href="" ng-click=" reload(false, 1, resultsPerPage, 'k.KeywordName')">Keyword</a>
-                    </th>
-                    <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
-                        <a href="" ng-click="reload(false, 1, resultsPerPage,'adk.RankingPath')">Ranking path</a>
-                    </th>
-                    <th class="text-capitalize">
-                        <a href="" ng-click="reload(false, 1, resultsPerPage,'adk.LastRank')">{{ dict.x_position }}</a>
-                    </th>
-                    <th class="text-capitalize" colspan="2">
-                        <a href="" ng-click="reload(false, 1, resultsPerPage,'Change')">Change</a>
-                    </th>
-                    <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
-                        <a href="" ng-click="reload(false, 1, resultsPerPage,'ks.LocalSearches')">Searches</a>
-                    </th>
-                    <!--
-                        <th class="text-capitalize hide-if-mobile">
-                            <a href="" ng-click="orderByField='Rank.Date'; reverseSort = !reverseSort">Updated</a>
-                        </th>-->
-                    <th class="auto-width"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr data-ng-repeat="keyword in Domain.Keywords">
-                    <td><a href="" style="color: #000;" class="font-weight-bold-600" data-ng-click="keywordChartZoomPopup(keyword.KeywordName)">{{ keyword.KeywordName }}</a></td>
+            <div data-ng-if="groupErrorMessage != null" class="alert alert-danger">{{ groupErrorMessage }}</div>
+            <div data-ng-if="groupSuccessMessage != null" class="alert alert-success">{{ groupSuccessMessage }}</div>
+
+            <div class="table-responsive">
+                <table class="table-striped" data-ng-show="Domain.TotalKeywords > 0">
+                    <thead>
+                    <tr data-ng-hide="editGroupsMode">
+                        <th>
+                            <a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[0])">Keyword</a>
+                        </th>
+                        <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
+                            <a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[1])">Ranking path</a>
+                        </th>
+                        <th class="text-capitalize">
+                            <a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[2])">{{ dict.x_position }}</a>
+                        </th>
+                        <th colspan="2">
+                            <a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[3])">Change</a>
+                        </th>
+                        <th data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-capitalize">
+                            <a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[4])">Searches</a>
+                        </th>
 
 
-                    <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-overflow-ellipsis-200"><a href="" class="a-text-style" title="{{ keyword.Rank.Href }}">{{ keyword.Rank.Href }}</a> </td>
-                    <td>
-                        <span data-ng-if="keyword.Rank.Position == 101">100+</span>
-                        <span data-ng-if="keyword.Rank.Position < 101 && keyword.Rank.Position > 0"><a href="" data-ng-click="serpPopup(keyword.UserDomainKeywordId)">{{ keyword.Rank.Position }}</a></span>
+                        <th class="auto-width">
+                                    <span class="wincher-checkbox">
+                                        <input type="checkbox" class="wincher-checkbox" id="checkbox-all" ng-model="Domain.selectedAllChecked" ng-change="selectAllKeywords()" />
+                                        <label for="checkbox-all"></label>
+                                    </span>
+                        </th>
+                    </tr>
 
-                        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" style="margin-right:5px;" class="displayinline" data-ng-show="keyword.Rank.Spinner === true" alt="loading" />
-                        <i> <span class="small-black" data-ng-show="keyword.Rank.Text">{{ keyword.Rank.Text }}</span></i>
+                    <tr data-ng-show="editGroupsMode">
+                        <th style="width: 30%;"><a href="" ng-click="flipOrderAndReload(Domain.OrderByOptions[0])">Keyword</a>
+                        </th>
+                        <th>Assign to group</th>
+                        <th colspan="5"></th>
+                    </tr>
 
-
-                    </td>
-                    <td style="width: 20px;">{{ keyword.Change }}</td>
-
-                    <td><span class="icon-small" data-ng-class="trendClass(keyword.Change) + '-small'"></span></td>
-                    <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" style="width: 20px;">{{ keyword.LocalSearches }}</td>
-                    <!--
-                        <td class="hide-if-mobile">{{ keyword.Rank.Date  | date : 'mediumDate'  }}</td>
-                        -->
-                    <td>
-                        <a data-ng-click="deleteKeywordConfirm(keyword.UserDomainKeywordId)" href="">
-                            <img alt="remove keyword" data-ng-src="{{config.BASE_PATH}}images/Icon/IconsPngBlack/RemoveIcon_Black.png" />
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-hide="editGroupsMode" data-ng-repeat="keyword in Domain.Keywords">
+                        <td><a href="" class="font-weight-bold-600" data-ng-click="keywordChartZoomPopup(keyword.KeywordName)">{{ keyword.KeywordName }}</a></td>
 
 
+                        <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" class="text-overflow-ellipsis-200"><a target="_blank" style="color: #000;" href="{{ keyword.Rank.Href }}" title="{{ keyword.Rank.Href }}">{{ keyword.Rank.Path }}</a> </td>
+                        <td>
+                            <span data-ng-if="keyword.Rank.Position == 101">100+</span>
+                            <span data-ng-if="keyword.Rank.Position < 101 && keyword.Rank.Position > 0"><a href="" data-ng-click="serpPopup(keyword.UserDomainKeywordId)">{{ keyword.Rank.Position }}</a></span>
 
-            <div data-ng-show="(Domain.Request.ResultsPerPage < Domain.TotalKeywords) && !Domain.Request.SelectedAccountDomainKeywordId" data-pagination="" data-total-items="Domain.TotalKeywords" items-per-page="Domain.Request.ResultsPerPage" on-select-page="reload(false,page)" data-page="Domain.Request.Page" class="pull-left" max-size="5" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="First" last-text="Last"></div>
-            <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop5" data-ng-show="pageLoading" alt="loading" />
+                            <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" style="margin-right: 5px;" class="displayinline" data-ng-show="keyword.Rank.Spinner === true" alt="loading" />
+                            <i><span class="small-black" data-ng-show="keyword.Rank.Text">{{ keyword.Rank.Text }}</span></i>
 
-            <p  data-ng-show="Domain.Keywords.length > 1" class="text-right">Showing  <b>{{  keywordsFrom }}</b>  -  <b>{{  keywordsTo }}</b> of  <b>{{ Domain.TotalKeywords }}</b></p>
-            <br />
+                        </td>
+                        <td style="width: 20px;">{{ keyword.Change }}</td>
+
+                        <td><span class="icon-small" data-ng-class="trendClass(keyword.Change) + '-small'"></span></td>
+                        <td data-ng-show="Domain.AccountTypeIdentifier != 'PACKAGE_FREE'" style="width: 20px;">
+
+                                    <span data-ng-show="keyword.LocalSearches > 0">{{ keyword.LocalSearches }}
+                                    </span>
+                        </td>
+                        <td>
+                                    <span class="wincher-checkbox">
+                                        <input type="checkbox" id="checkbox{{$index}}" class="wincher-checkbox" id="mig" data-ng-model="keyword.Selected" /><label for="checkbox{{$index}}"></label>
+                                    </span>
+                        </td>
+                    </tr>
+                    <tr data-ng-show="editGroupsMode" data-ng-repeat="keyword in Domain.Keywords">
+                        <td><a href="" class="font-weight-bold-600" data-ng-click="keywordChartZoomPopup(keyword.KeywordName)">{{ keyword.KeywordName }}</a></td>
+
+
+                        <td class="keyword-group-td" style="width: 150px;">
+                            <group-search style="width: 150px;" placeholder="Group name + enter" ng-model="keyword.newGroup" auto-submit="true" submit="addGroup(keyword)" groups="Domain.KeywordGroups" account-domain-id="Domain.Request.AccountDomainId" />
+                        </td>
+                        <td colspan="5" class="keyword-group-td">
+                                    <span class="keyword-group-tag" data-ng-repeat="g in keyword.Groups">{{g.Name}} <a href="" data-ng-click="removeGroup(keyword.UserDomainKeywordId, g.Id)">
+                                        <img alt="remove keyword" data-ng-src="{{config.BASE_PATH}}images/Icon/delete-cross.png" />
+                                    </a></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div data-ng-show="Domain.TotalKeywords > 0">
+
+                <!--(Domain.Request.ResultsPerPage < Domain.TotalFilteredKeywords) &&-->
+                <div data-ng-show="Domain.Request.Filter.Type != 2" data-pagination="" data-total-items="Domain.TotalKeywords" items-per-page="Domain.Request.ResultsPerPage" on-select-page="reload(false,page)" data-page="Domain.Request.Page" class="pull-left" max-size="5" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="First" last-text="Last"></div>
+
+                <select data-ng-show="Domain.Request.Filter.Type != 2" style="width: 80px;" class="display-inline-block marginLeft10" data-ng-change="reload(true, 1,resultsPerPage)" data-ng-model="Domain.Request.ResultsPerPage">
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 10}}" value="10">10</option>
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 20}}" value="20">20</option>
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 50}}" value="50">50</option>
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 100}}" value="100">100</option>
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 200}}" value="200">200</option>
+                    <option data-ng-selected="{{Domain.Request.ResultsPerPage == 400}}" value="400">400</option>
+                </select>
+
+                <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="paddingLeft10 paddingTop5" data-ng-show="pageLoading" alt="loading" />
+
+                <div data-ng-show="Domain.Request.Filter.Type != 2" style="display: block;" class="pull-right">
+                    <select style="width: 150px;" data-ng-model="Domain.selectedbulkAction" data-ng-change="bulkDeleteKeywords()">
+                        <option value="">-- Bulk action --</option>
+                        <option value="delete">Delete selected</option>
+                    </select>
+                </div>
+                <div class="floatclear"></div>
+
+                <p data-ng-show=" Domain.Request.Filter.Type != 2">Showing  <b>{{  (((Domain.Request.Page - 1) * Domain.Request.ResultsPerPage) + 1) }}</b>  -  <b>{{  ((((Domain.Request.Page - 1) * Domain.Request.ResultsPerPage) ) + Domain.Keywords.length) }}</b> of  <b>{{ Domain.TotalFilteredKeywords}}</b></p>
+
+                <br />
 
                         <span data-ng-show="Domain.AccountTypeIdentifier == 'PACKAGE_FREE'">
                            <p>Keyword <b>bulk import</b>, <b>ranking URL</b> and Google <b>searches</b> per keyword available in PRO account
@@ -328,6 +424,9 @@
             </table>
             <a data-ng-if="LatestSuccesses.length > 5" class="" data-ng-click="rankingSuccessesPopup()" href="">View all</a>
             <hr>
+        </div>
+
+        <div data-ng-show="Domain.TotalKeywords > 0">
 
             <div data-ng-if="competitorErrorMessage != null" class="alert alert-danger">{{ competitorErrorMessage }}</div>
             <div data-ng-if="competitorSuccessMessage != null" class="alert alert-success">{{ competitorSuccessMessage }}</div>

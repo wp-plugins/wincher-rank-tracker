@@ -1,0 +1,11 @@
+﻿<div class="keyword-group-add">
+    <input focus-me="focusInput" type="text" data-ng-keydown="selectGroup($event)" placeholder="{{placeholder}}" data-ng-blur="hideMatchingGroupsList()" data-ng-change="getMatchingGroups(ngModel)" class="form-control" data-ng-model="ngModel" />
+    <ul class="keyword-group-suggestions">
+        <li data-ng-repeat="group in matchingGroups | orderBy: 'Name' track by $index">
+            <a data-ng-mousedown="setCurrentGroupIndex($index, true)" data-ng-mouseover="setCurrentGroupIndex($index, false)" data-ng-class="getCurrentGroupIndex() === $index ? 'current' : ''" href="">
+                <span data-ng-bind-html='group.Name | styleMatching:ngModel'></span>
+            </a>
+        </li>
+    </ul>
+</div>
+

@@ -1,78 +1,51 @@
-<div class="popup-content ">
+<div class="popup-content">
     <div data-ng-if="uploadError != null" class="alert alert-danger">{{ uploadError }}</div>
-    <h1 class="text-center">Auto report</h1>
+    <h1 class="text-center">Generate PDF</h1>
+
     <br />
 
-    <form data-ng-submit="post()">
-        <div class="form-group">
-            <label class="text-left paddingBottom10">Interval</label>
-            <div>
-
-                <!--
-                <input type="radio" data-ng-model="model.SendInterval" data-ng-value="2" />
-                <label class="font-weight-normal">Daily</label>
-                    -->
-                <input type="radio" id="vatRadioYes" data-ng-model="model.SendInterval" data-ng-value="0"style="margin-left: 20px;" />
-                <label class="font-weight-normal">Weekly</label>
-                <input type="radio" id="vatRadioNo" data-ng-model="model.SendInterval" data-ng-value="1" style="margin-left: 20px;" />
-                <label class="font-weight-normal">Monthly</label>
-            </div>
-        </div>
-        <div class="form-group" data-ng-if="model.SendInterval == 0">
-            <label>Day of week to send report</label>
-
-            <select data-ng-model="model.DayOfWeekToSend">
-                <option value="1">Monday</option>
-                <option value="2">Tuesday</option>
-                <option value="3">Wednesday</option>
-                <option value="4">Thursday</option>
-                <option value="5">Friday</option>
-                <option value="6">Saturday</option>
-                <option value="7">Sunday</option>
-
-            </select>
-
-        </div>
-
-        <div class="form-group">
-            <label>Send to (email)</label>
-            <input type="text" data-ng-model="model.SendTo" class="form-control">
-            <p class="small-grey paddingTop5 "><b>Note:</b> Use comma for multiple addresses</p>
-        </div>
-
-
-
-        <div class="form-group">
-            <label>Logo <span class="font-weight-normal">(optional)</span></label>
-            <br />
-
-            <br />
-
-
-            <input type="file" data-ng-file-select="onFileSelect($files)">
-
-            <br />
-
-
-            <div data-ng-if="model.LogoId">
-                <img alt="logo" data-ng-src="/image/get?Id={{model.LogoId}}" height="50" />
-            </div>
-
-            <br />
-        </div>
-
-        <div class="form-group" data-ng-if="model.Id">
-
-            <input type="checkbox" data-ng-model="model.Enabled" class="form-control" />
-            <label class="font-weight-normal">Enabled</label>
-        </div>
-
-        <button type="submit" class="center-block paddingLeft70 paddingRight70 btn-alternative"> <span data-ng-if="model.Id">Save</span>  <span data-ng-if="!model.Id">Activate</span></button>
-
-
-        <div class="text-center center-block" data-ng-show="popupLoading">
-            <img src="/Content/Images/preloader16.gif" class="text-center center-block" alt="loading" />
-        </div>
-    </form>
-    <button title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">&times;</button>
+    <div class="form-group">
+        <label>Keywords</label>
+        <select ng-model="Filter" data-ng-options="k.Text group by dict['keywordfilter_' + k.Type] for k in filterOptions">
+            <option value="">-- All --</option>
+        </select>
+    </div>
+    <p class="font-weight-bold text-center" ng-if="images">{{(selectedIndex+1)}} / {{images.length}}</p>
+    <table class="border-none">
+        <tr>
+            <td class="border-none">
+                <img style="cursor: pointer" data-ng-src="{{config.BASE_PATH}}images/LeftArrow2.png" data-ng-click="prev()" />
+            </td>
+            <td class="text-center border-none">
+                <img alt="logo" data-ng-if="images[selectedIndex]" data-ng-src="{{logoUrl}}={{images[selectedIndex]}}" height="50" style="max-width: 200px;" />
+            </td>
+            <td class="text-right border-none">
+                <img style="cursor: pointer" data-ng-src="{{config.BASE_PATH}}images/RightArrow2.png" data-ng-click="next()" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-center border-none ">
+                <br />
+                <br />
+                <a class="font-weight-bold text-center" href="" data-ng-click="deleteLogo()">Delete</a>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <div class="form-group text-center">
+        <label>Upload new logotype</label>
+        <br />
+        <br />
+        <input class="center-block" style="width: 170px;" type="file" data-ng-file-select="onFileSelect($files)">
+        <br />
+    </div>
+    <div class="text-center">
+        <a data-ng-click="downloadPdf(images[selectedIndex], Filter)" type="submit" class="paddingRight70 paddingLeft70 no-underline btn btn-alternative">Download PDF</a>
+    </div>
+    <div class="text-center center-block" data-ng-show="popupLoading">
+        <img data-ng-src="{{config.BASE_PATH}}images/preloader16.gif" class="text-center center-block" alt="loading" />
+    </div>
+    <button
+            title="Close (Esc)" data-ng-click="cancel()" type="button" class="mfp-close">
+        &times;</button>
 </div>

@@ -545,7 +545,7 @@ angular.module('app', [
             .state('dashboard', {
                 templateUrl: config.BASE_PATH + 'templates/dashboard.html',
                 url: '/dashboard',
-                controller: ["$scope", "$timeout", "$rootScope", "$state", "$http", "$sce", '$filter', '$modal', "accountService", "domainService", "competitorService", "keywordService", "autoReportService", "usersService", "shareService", "config", function($scope, $timeout, $rootScope, $state, $http, $sce, $filter, $modal, accountService, domainService, competitorService, keywordService, autoReportService, usersService, shareService,  config) {
+                controller: ["$scope", "$timeout", "$rootScope", "$state", "$http", "$sce", '$filter', '$modal', "accountService", "domainService", "competitorService", "keywordService", "autoReportService", "usersService", "shareService", "groupSearchFactory", "config", function($scope, $timeout, $rootScope, $state, $http, $sce, $filter, $modal, accountService, domainService, competitorService, keywordService, autoReportService, usersService, shareService, groupSearchFactory,  config) {
                     if (!config.HAS_KEY) {
                         $state.transitionTo('activate', null, {reload: true});
                         return;
@@ -557,18 +557,23 @@ angular.module('app', [
 
                     $scope.config = config;
 
-                    $scope.dict = {"ASC":"Ascending","CHANGE_ONE_MONTH":"Trend 1 month","CHANGE_ONE_WEEK":"Trend 1 week","CHANGE_SIX_MONTHS":"Trend 6 months","CHANGE_THREE_MONTHS":"Trend 3 months","CREATED_DATE":"Created","CUSTOM":"Custom","DESC":"Descending","DOMAIN_NAME":"Domain name","LAST_MONTH":"Last month","LAST_WEEK":"Last week","LAST_YEAR":"Last year","NUM_COMPETITORS":"Competitors","NUM_KEYWORDS":"Keywords","ONE_MONTH":"One month","ONE_WEEK":"One week","ONE_YEAR":"One year","p_account_close_h1":"Close account","p_account_overview_h1":"Overview","p_account_payment_h1":"Payment","p_account_profile_h1":"Profile","p_account_transactions_h1":"Transactions","p_account_users_h1":"Users","p_alerts_h1":"Alerts","p_competitors_h1":"Competitors","p_keywords_h1":"Keywords","p_keywords_p":"You can add as many keywords as you want! You are currently tracking a total of {0} keywords for your domains. Add more keywords to track by adding them below. More than {1} keywords is {2} euro per keyword per month.","p_keywords_p_free":"You can only add {0} keyword for your Free account. Please upgrade to Account to add and track more keywords.","p_keywords_p_trial":"You can add {0} different keywords for your Trial account.  You are currently tracking a total of {1} keywords for your domain. Add more keywords to track by adding them below.","p_keywords_popup_p":"By adding extra keyword you also confirming that {0} will be added to your invoice.","p_myaccount_h1":"My account","p_mydomains_h1":"My domains","p_ranking_h1":"Ranking","p_renewaccount_h1":"Your 30 day trial account has expired!","p_support_h1":"Support","SEARCH_LOCATION":"Search location","SIX_MONTHS":"Six months","THREE_MONTHS":"Three months","topmenu_addremove_domains":"Add/remove domains","topmenu_admin":"Admin","topmenu_logout":"Sign out","topmenu_myaccount":"My account","topmenu_mydomains":"My domains","topmenu_rankings":"Rankings","TWO_MONTHS":"Two months","TWO_WEEKS":"Two weeks","TWO_YEARS":"Two years","x_2nd_best":"2nd best","x_active":"Active","x_add":"Add","x_add_domain":"add domain","x_add_keyword":"Add keyword","x_added":"Added","x_all":"All","x_amount":"Amount","x_best":"best","x_card_holder":"Card holder","x_category":"category","x_change":"change","x_change_card":"Change card","x_competitor":"Competitors","x_competitors":"Competitors","x_credit_card_information":"Credit card information","x_csv":"CSV","x_current_plan":"Current plan","x_date":"Date","x_description":"Description","x_domain_name":"Domain name","x_domain_to_monitor":"Domain to monitor","x_expiry_date":"Expiry date","x_extra_keywords":"Extra keywords","x_keyword":"keyword","x_keywords":"Keywords","x_last_week_position_summary":"Last week position summary","x_manage_domains":"manage domains","x_manage_keyword_for":"Manage keywords for","x_message":"message","x_my_account":"my account","x_name":"Name","x_on":"on","x_on_all_keywords":"on all keywords","x_pdf":"PDF","x_position":"position","x_rank_last_updated":"rank last updated","x_rankings":"rankings","x_recent_ranking_success":"recent ranking success","x_search_location":"search location","x_select":"select","x_select_date_range":"select date range","x_select_keyword":"select keyword","x_send_graph":"Send graph","x_start_price":"Start price","x_support_category":"Support category","x_total":"Total","x_total_current_plan":"Total current plan","x_trial_account":"Trial account","x_view_all":"view all","x_worst":"worst","x_zoom_chart":"Zoom chart"};
+                    // Default hardcode
+                    $scope.dict = {"ASC":"Ascending","CHANGE_ONE_MONTH":"Trend 1 month","CHANGE_ONE_WEEK":"Trend 1 week","CHANGE_SIX_MONTHS":"Trend 6 months","CHANGE_THREE_MONTHS":"Trend 3 months","CREATED_DATE":"Created","CUSTOM":"Custom","DESC":"Descending","DOMAIN_NAME":"Domain name","keywordfilter_0":"None","keywordfilter_1":"Groups","keywordfilter_2":"Keywords","LAST_MONTH":"Last month","LAST_WEEK":"Last week","LAST_YEAR":"Last year","NUM_COMPETITORS":"Competitors","NUM_KEYWORDS":"Keywords","ONE_MONTH":"One month","ONE_WEEK":"One week","ONE_YEAR":"One year","p_account_close_h1":"Close account","p_account_overview_h1":"Overview","p_account_payment_h1":"Payment","p_account_profile_h1":"Profile","p_account_transactions_h1":"Transactions","p_account_users_h1":"Users","p_alerts_h1":"Alerts","p_competitors_h1":"Competitors","p_keywords_h1":"Keywords","p_keywords_p":"You can add as many keywords as you want! You are currently tracking a total of {0} keywords for your domains. Add more keywords to track by adding them below. More than {1} keywords is {2} euro per keyword per month.","p_keywords_p_free":"You can only add {0} keyword for your Free account. Please upgrade to Account to add and track more keywords.","p_keywords_p_trial":"You can add {0} different keywords for your Trial account.  You are currently tracking a total of {1} keywords for your domain. Add more keywords to track by adding them below.","p_keywords_popup_p":"By adding extra keyword you also confirming that {0} will be added to your invoice.","p_myaccount_h1":"My account","p_mydomains_h1":"My domains","p_ranking_h1":"Ranking","p_renewaccount_h1":"Your 30 day trial account has expired!","p_support_h1":"Support","SEARCH_LOCATION":"Search location","SIX_MONTHS":"Six months","THREE_MONTHS":"Three months","topmenu_addremove_domains":"Add/remove domains","topmenu_admin":"Admin","topmenu_logout":"Sign out","topmenu_myaccount":"My account","topmenu_mydomains":"My domains","topmenu_rankings":"Rankings","TWO_MONTHS":"Two months","TWO_WEEKS":"Two weeks","TWO_YEARS":"Two years","x_2nd_best":"2nd best","x_active":"Active","x_add":"Add","x_add_domain":"add domain","x_add_keyword":"Add keyword","x_added":"Added","x_all":"All","x_amount":"Amount","x_best":"best","x_card_holder":"Card holder","x_category":"category","x_change":"change","x_change_card":"Change card","x_competitor":"Competitors","x_competitors":"Competitors","x_credit_card_information":"Credit card information","x_csv":"CSV","x_current_plan":"Current plan","x_date":"Date","x_description":"Description","x_domain_name":"Domain name","x_domain_to_monitor":"Domain to monitor","x_expiry_date":"Expiry date","x_extra_keywords":"Extra keywords","x_keyword":"keyword","x_keywords":"Keywords","x_last_week_position_summary":"Last week position summary","x_manage_domains":"manage domains","x_manage_keyword_for":"Manage keywords for","x_message":"message","x_my_account":"my account","x_name":"Name","x_on":"on","x_on_all_keywords":"on all keywords","x_pdf":"PDF","x_position":"position","x_rank_last_updated":"rank last updated","x_rankings":"rankings","x_recent_ranking_success":"recent ranking success","x_search_location":"search location","x_select":"select","x_select_date_range":"select date range","x_select_keyword":"select keyword","x_send_graph":"Send graph","x_start_price":"Start price","x_support_category":"Support category","x_total":"Total","x_total_current_plan":"Total current plan","x_trial_account":"Trial account","x_view_all":"view all","x_worst":"worst","x_zoom_chart":"Zoom chart"};
+
+                    domainService.getDictionary(function(response) {
+                        if (response.success) {
+                            $scope.dict = response.data
+                        }
+                    });
+
                     $scope.basepath = config.BASE_PATH;
 
                     $scope.loading = true;
+                    $scope.editGroupsMode = false;
                     $scope.chartLoading = true;
                     $scope.addingKeywordLoading = false;
                     $scope.addCompetitorLoading = false;
                     $scope.accountUpgradeErrorMessage = null;
-
-                    $scope.orderByAsc = true;
-                    $scope.keywordsFrom = 1;
-                    $scope.KeywordsTo = 1;
 
                     $scope.keywordForm = {};
 
@@ -577,14 +582,15 @@ angular.module('app', [
                     $scope.Domain.SelectedAccountDomainKeywordId = null;
                     $scope.Domain.SelectedGraphInterval = "ONE_MONTH";
                     $scope.Domain.Request.GraphInterval = 3;
-                    $scope.Domain.Request.ResultsPerPage = 10;
+                    $scope.Domain.Request.ResultsPerPage = null;
                     $scope.Domain.Request.Height = 400;
 
                     $scope.Domain.Request.Page = 1;
-                    $scope.Domain.Request.OrderBy = 'adk.LastRank asc';
-                    $scope.Domain.Request.SelectedAccountDomainKeywordId = null;
+                    $scope.Domain.Request.GraphHeight = 0; // auto
 
                     $scope.bigCurrentPage = 1;
+
+                    $scope.FbLikeUrl = "https://www.facebook.com/pages/Wincher/255139058015479?fref=ts";
 
                     accountService.getAccount(function (response) {
                         if (response.success) {
@@ -610,7 +616,7 @@ angular.module('app', [
                                             $scope.Domain.Request.AccountDomainId = parseInt($rootScope.userDomainId);
                                         }
 
-                                        $scope.reload(true, 1, 10);
+                                        $scope.reload(true, 1);
                                     } else {
                                         $scope.isAccountError = true;
                                         $scope.accountError = response.error;
@@ -625,9 +631,7 @@ angular.module('app', [
                         }
                     });
 
-                    $scope.reload = function(rankingCheck, page, resultsPerPage, orderBy) {
-                        var rangeFrom = $filter('date')(angular.element("#rangeFrom").val(), 'yyyy-MM-dd');
-                        var rangeTo = $filter('date')(angular.element("#rangeTo").val(), 'yyyy-MM-dd');
+                    $scope.reload = function(rankingCheck, page, resultsPerPage) {
 
                         $scope.pageLoading = true;
                         $scope.Domain.Request.Page = page;
@@ -637,46 +641,35 @@ angular.module('app', [
                             $scope.Domain.Request.Page = 1;
                         }
 
-                        if (orderBy) {
-                            $scope.orderByAsc = !$scope.orderByAsc;
-                        }
-
-                        if (orderBy) {
-
-                            if ($scope.orderByAsc == true) {
-                                $scope.Domain.Request.OrderBy = orderBy + " asc";
-                            } else {
-                                $scope.Domain.Request.OrderBy = orderBy + " desc";
-                            }
-                        }
-
                         domainService.getUserDomain($scope.Domain.Request, function (response) {
                             if (response.success) {
                                 var domain = response.data;
 
                                 $scope.selectedDomainName = domain.DomainNameUnicode;
 
-                                var request = $scope.Domain.Request;
-
                                 $scope.Domain = domain;
-                                $scope.Domain.Request = request;
-                                $scope.Domain.ChartFrom = $filter('date')(domain.ChartFrom, 'yyyy-MM-dd');
-                                $scope.Domain.ChartTo = $filter('date')(domain.ChartTo, 'yyyy-MM-dd');
+
                                 $scope.loading = false;
                                 $scope.pageLoading = false;
-                                $scope.keywordsFrom = (($scope.Domain.Request.Page - 1) * $scope.Domain.Request.ResultsPerPage) + 1;
-                                $scope.keywordsTo = window.Math.min($scope.Domain.Request.Page * $scope.Domain.Request.ResultsPerPage, $scope.Domain.TotalKeywords);
 
-                                if ($scope.Domain.Request.SelectedAccountDomainKeywordId) {
-                                    $scope.reloadKeywordChart();
-                                } else {
-                                    $scope.reloadChart();
-                                }
+                                $scope.Domain.Request.Height = 400;
+                                $scope.Domain.Request.ResultsPerPage = domain.ResultsPerPage;
+
+                                $scope.reloadChart();
 
                                 if (page == 1) {
                                     $scope.getRankingSuccesses();
                                     $scope.getRankingTrend();
-                                    $scope.getKeywords();
+
+                                    if (!$scope.filterOptions) {
+                                        $scope.getFilterOptions();
+                                    }
+                                }
+
+                                if ($scope.filterOptions && $scope.Domain.Request.Filter) {
+                                    $scope.Domain.Request.Filter = window._.find($scope.filterOptions, function (o) {
+                                        return o.Value == $scope.Domain.Request.Filter.Value && o.Type == $scope.Domain.Request.Filter.Type;
+                                    });
                                 }
 
                                 if (rankingCheck == true) {
@@ -688,7 +681,10 @@ angular.module('app', [
 
                                     var callback = function() {
 
-                                        $scope.reload(false, 1);
+                                        if ($scope.notTracked.length < 20) {
+                                            $scope.reload(false, 1);
+                                        }
+
                                         $scope.currentIndex = $scope.currentIndex + 1;
 
                                         if ($scope.currentIndex < $scope.total && $scope.notTracked[$scope.currentIndex].UserDomainKeywordId) {
@@ -713,9 +709,19 @@ angular.module('app', [
                                         }
                                     });
                                 }
+
+                                if ($scope.Domain.FacebookPopupShown == false) {
+
+                                    $modal.open({
+                                        templateUrl: config.BASE_PATH + 'templates/Panel/Popups/facebook.html',
+                                        controller: 'FacebookPopupCtrl',
+                                        opened: $scope.$parent.wrapperFooterClass = "hide-if-mobile",
+                                        resolve: {}
+                                    });
+                                }
                             }
                         });
-                    }
+                    };
 
                     $scope.upgrade_now = function () {
                         accountService.getAccountUser(function (response) {
@@ -828,7 +834,79 @@ angular.module('app', [
                         });
                     };
 
+                    $scope.refreshPageGraph = function () {
+                        $scope.Domain.Request.IncludeCompetitors = true;
+                        $scope.reload(false, $scope.Domain.Request.Page);
+                    };
+
+                    $scope.flipOrderAndReload = function (orderBy) {
+
+                        if ($scope.Domain.Request.OrderBy == orderBy.Value) {
+                            if ($scope.Domain.Request.SortBy == 1) {
+                                $scope.Domain.Request.SortBy = 2;
+                            } else {
+                                $scope.Domain.Request.SortBy = 1;
+                            }
+                        }
+                        $scope.Domain.Request.OrderBy = orderBy.Value;
+                        $scope.reload(false, $scope.Domain.Request.Page);
+                    };
+
+                    $scope.selectAllKeywords = function () {
+
+                        for (var i = 0; i < $scope.Domain.Keywords.length; i++) {
+                            if ($scope.selectedAllChecked) {
+                                $scope.Domain.Keywords[i].Selected = false;
+                            } else {
+                                $scope.Domain.Keywords[i].Selected = true;
+                            }
+                        }
+
+                        $scope.selectedAllChecked = !$scope.selectedAllChecked;
+                    };
+
+                    $scope.addGroup = function (keyword) {
+
+                        keywordService.addGroupToKeyword(keyword.UserDomainKeywordId, keyword.newGroup).then(
+                            function () {
+                                $scope.getFilterOptions();
+                                $scope.reload(false, $scope.currentPage);
+
+                            }, function (data) {
+                                $scope.errorMessage = data.Message;
+                                $scope.loading = false;
+                            }
+                        );
+                    };
+
+                    $scope.removeGroup = function (accountDomainKeywordId, groupId) {
+
+                        keywordService.removeKeywordFromGroup(accountDomainKeywordId, groupId).then(
+                            function (response) {
+                                $scope.getFilterOptions();
+                                $scope.reload(false, $scope.currentPage);
+
+                                if (response.data) {
+
+                                    //console.log(response.data);
+
+                                    //$scope.groupSuccessMessage = angular.fromJson(response.data);
+                                    //$scope.groupErrorMessage = null;
+                                }
+
+                            }, function (data) {
+                                $scope.groupErrorMessage = data.Message;
+                                $scope.groupSuccessMessage = null;
+
+                                $scope.loading = false;
+                            }
+                        );
+                    };
+
                     $scope.reloadKeywordChart = function () {
+
+                        $scope.Domain.Request.IncludeCompetitors = true;
+
                         domainService.getKeywordChartRaw($scope.Domain.Request, function (response) {
                             for (var i = 0; i < response.data.graphs; i++) {
                                 response.data.graphs[i] = $sce.trustAsHtml(response.data.graphs[i]);
@@ -864,13 +942,13 @@ angular.module('app', [
                                 }
                             }
                         })
-                    }
+                    };
 
                     $scope.getRankingTrend = function () {
                         domainService.getRankingTrend($scope.Domain.Request.AccountDomainId, $scope.Domain.Request.GraphInterval, function (response) {
                             $scope.Trend = response.data
                         });
-                    }
+                    };
 
                     $scope.twitterShare = function (successId) {
                         shareService.shareSuccessTwitter(successId, function(response) {
@@ -914,15 +992,16 @@ angular.module('app', [
                         });
                     };
 
-                    $scope.getKeywords = function() {
-                        domainService.getUserDomainKeywords($scope.Domain.Request.AccountDomainId, function(response) {
-                            if (response.success) {
-                                $scope.Keywords = response.data;
-                            } else {
-                                $scope.Keywords = $scope.Domain.Keywords;
+                    $scope.getFilterOptions = function () {
+                        keywordService.getKeywordFilterList($scope.Domain.Request.AccountDomainId).then(function (response) {
+                            if (response.data.success) {
+                                $scope.filterOptions = response.data.data;
                             }
+                        }, function (data) {
+                            console.log(data);
                         });
                     };
+
 
                     $scope.trendClass = function (value) {
 
@@ -1013,9 +1092,11 @@ angular.module('app', [
                         });
                     };
 
-                    $scope.createKeyword = function (keywords) {
+                    $scope.createKeyword = function () {
 
                         var keywords = $scope.keywordForm.newKeyword;
+
+                        var groups = $scope.keywordForm.newGroup;
 
                         if ($scope.Domain.KeywordAddingDisabled) {
                             $modal.open({
@@ -1027,24 +1108,22 @@ angular.module('app', [
                             });
                         } else {
 
-                            if ($scope.addingKeywordLoading == false && keywords) {
+                            if ($scope.addingKeywordLoading == false && keywords && !$scope.keywordForm.currentGroupIndex) {
 
                                 $scope.addingKeywordLoading = true;
 
-                                keywordService.createKeyword($rootScope.userDomainId, keywords).then(function (response) {
+                                keywordService.createKeyword($rootScope.userDomainId, keywords, groups).then(function (response) {
 
                                     $scope.keywordForm.newKeyword = "";
-                                    $scope.Domain.Request.OrderBy = "adk.CreatedAt desc";
+                                    $scope.matchingGroups = [];
+                                    $scope.keywordForm.newGroup = null;
+
+                                    $scope.Domain.Request.OrderBy = $scope.Domain.OrderByOptions[5].Value;
+                                    $scope.Domain.Request.SortBy = 1;
 
                                     $scope.reload(true, $scope.Domain.Request.Page);
                                     $scope.hideMessages();
-
-                                    if (response.data.success) {
-                                        $scope.keywordSuccessMessage = response.data.Message;
-                                    } else {
-                                        $scope.keywordErrorMessage = response.data.error;
-                                    }
-
+                                    $scope.keywordSuccessMessage = response.data.Message;
                                     $scope.addingKeywordLoading = false;
                                     $scope.newKeyword = "";
 
@@ -1056,39 +1135,64 @@ angular.module('app', [
                                     $scope.addingKeywordLoading = false;
                                 });
                             }
-                        };
+
+                            if ($scope.keywordForm.currentGroupIndex) {
+                                alert("Locked = $scope.keywordForm.currentGroupIndex = " + $scope.keywordForm.currentGroupIndex);
+                            }
+                        }
                     };
 
-                    $scope.deleteKeywordConfirm = function (accountDomainKeywordId) {
+                    $scope.getSelectedKeywordIds = function () {
 
-                        var keyword = window._.find($scope.Domain.Keywords, function (k) {
-                            return k.UserDomainKeywordId == accountDomainKeywordId;
-                        });
+                        var selectedKeywords = window._.filter($scope.Domain.Keywords, function (k) { return k.Selected; });
+                        var keywordIds = [];
 
-                        var modalInstance = $modal.open({
-                            templateUrl: config.BASE_PATH + 'templates/Panel/Popups/removeKeyword.html',
-                            controller: 'DeleteKeywordPopupCtrl',
-                            resolve: {
-                                keyword: function () {
-                                    return keyword;
+                        for (var i = 0; i < selectedKeywords.length; i++) {
+                            keywordIds.push(selectedKeywords[i].UserDomainKeywordId);
+                        }
+
+                        return keywordIds;
+                    };
+
+                    $scope.bulkDeleteKeywords = function () {
+
+                        var keywordIds = $scope.getSelectedKeywordIds();
+
+                        if (keywordIds.length > 0) {
+
+                            var modalInstance = $modal.open({
+                                opened: $scope.$parent.wrapperFooterClass = "hide-if-mobile",
+                                templateUrl: config.BASE_PATH + 'templates/Panel/Popups/removeKeyword.html',
+                                controller: 'BulkDeleteKeywordsPopupCtrl',
+                                resolve: {
+                                    ids: function () { return keywordIds; },
+                                    config: function () { return config; }
                                 }
-                            }
-                        });
+                            });
 
-                        modalInstance.result.then(function (model) {
+                            modalInstance.result.then(function () {
 
-                            $scope.reload(false, $scope.Domain.Request.Page);
+                                $scope.$parent.wrapperFooterClass = false;
+                                $scope.reload(false, $scope.currentPage);
+                                $scope.hideMessages();
+                                $scope.keywordSuccessMessage = keywordIds.length + " keyword(s) has been deleted";
+                                $scope.addingKeywordLoading = false;
+                                $scope.Domain.selectedbulkAction = "";
+
+                                $scope.Domain.selectedAllChecked = false;
+
+                            }, function () {
+                                $scope.$parent.wrapperFooterClass = false;
+                                $scope.hideMessages();
+                                $scope.addingKeywordLoading = false;
+                                $scope.Domain.selectedbulkAction = "";
+
+                            });
+                        } else {
                             $scope.hideMessages();
-
-                            $scope.keywordSuccessMessage = "Keyword [" + keyword.KeywordName + "] has been deleted";
-                            $scope.addingKeywordLoading = false;
-
-                        }, function () {
-
-                            $scope.hideMessages();
-                            $scope.addingKeywordLoading = false;
-
-                        });
+                            $scope.keywordErrorMessage = "No keywords selected.";
+                            $scope.Domain.selectedbulkAction = "";
+                        }
                     };
 
                     $scope.bulkInsert = function () {
@@ -1104,7 +1208,9 @@ angular.module('app', [
 
                         modalInstance.result.then(function (model) {
 
-                            $scope.Domain.Request.OrderBy = "adk.CreatedAt desc";
+                            $scope.Domain.Request.OrderBy = $scope.Domain.OrderByOptions[5].Value;
+                            $scope.Domain.Request.SortBy = 1;
+
                             $scope.reload(true, $scope.currentPage);
 
                             $scope.hideMessages();
@@ -1149,10 +1255,27 @@ angular.module('app', [
                             templateUrl: config.BASE_PATH + 'templates/Panel/Popups/autoReport.html',
                             controller: 'AutoReportPopupCtrl',
                             resolve: {
-                                accountDomainId: function () { return $rootScope.userDomainId; }
+                                accountDomainId: function () { return $rootScope.userDomainId; },
+                                dict: function () { return $scope.dict; }
                             }
                         });
                     };
+
+                    $scope.pdfReportPopup = function () {
+
+                        $modal.open({
+                            templateUrl: config.BASE_PATH + 'templates/Panel/Popups/pdfReport.html',
+                            controller: 'PdfReportPopupCtrl',
+                            opened: true,
+                            resolve: {
+                                request: function () { return $scope.Domain.Request; },
+                                domainName: function () { return $scope.Domain.DomainName; },
+                                dict: function () { return $scope.dict; }
+
+                            }
+                        });
+                    };
+
 
                     $scope.keywordChartPopup = function (keywordName, showCompetitors) {
                         if (!showCompetitors)
@@ -1182,9 +1305,9 @@ angular.module('app', [
                                 opened: true,
                                 windowClass: 'w1300px',
                                 resolve: {
-                                    accountDomainKeywordId: function () { return accountDomainKeywordId },
                                     selectedGraphInterval: function () { return $scope.Domain.Request.GraphInterval; },
-                                    showCompetitors: function () { return showCompetitors; }
+                                    showCompetitors: function () { return showCompetitors; },
+                                    filter: function () { return { Value: accountDomainKeywordId, Type: 2 }; }
                                 }
 
                             });
@@ -1208,29 +1331,77 @@ angular.module('app', [
                         });
                     };
 
+                    $scope.downloadSimpleCSV = function () {
+                        domainService.getSimpleCSV($rootScope.userDomainId, $scope.Domain.Request);
+                    };
+
                     $scope.downloadCSV = function () {
+                        domainService.getCSV($rootScope.userDomainId, $scope.Domain.Request);
+                    };
+
+                    /*$scope.downloadPDF = function () {
 
                         var rangeFrom = $filter('date')(angular.element("#rangeFrom").val(), 'yyyy-MM-dd');
                         var rangeTo = $filter('date')(angular.element("#rangeTo").val(), 'yyyy-MM-dd');
 
-                        domainService.getCSV($rootScope.userDomainId, rangeFrom, rangeTo);
-                    };
-
-                    $scope.downloadPDF = function () {
-
-                        var rangeFrom = $filter('date')(angular.element("#rangeFrom").val(), 'yyyy-MM-dd');
-                        var rangeTo = $filter('date')(angular.element("#rangeTo").val(), 'yyyy-MM-dd');
-
-                        domainService.getPDF($rootScope.userDomainId, rangeFrom, rangeTo);
-                    };
-
-                    $scope.refreshPageGraph = function () {
-                        $scope.reload(false, $scope.Domain.Request.Page);
-                    };
-
+                        domainService.getPDF($rootScope.userDomainId, $scope.Domain.Request);
+                    };*/
                 }]
             })
         }])
+
+    .run([
+        '$rootScope', function ($rootScope) {
+            $rootScope.facebookAppId = '534838143276126'; // set your facebook app id here
+        }
+    ])
+
+    .directive('fbLike', [
+        '$window', '$rootScope', function ($window, $rootScope) {
+            return {
+                restrict: 'A',
+                scope: {
+                    fbLike: '=?'
+                },
+                link: function (scope, element, attrs) {
+                    if (!$window.FB) {
+                        // Load Facebook SDK if not already loaded
+                        $.getScript('//connect.facebook.net/en_US/sdk.js', function () {
+                            $window.FB.init({
+                                appId: $rootScope.facebookAppId,
+                                xfbml: true,
+                                version: 'v2.3'
+                            });
+                            renderLikeButton();
+                        });
+                    } else {
+                        renderLikeButton();
+                    }
+
+                    var watchAdded = false;
+                    function renderLikeButton() {
+                        if (!!attrs.fbLike && !scope.fbLike && !watchAdded) {
+                            // wait for data if it hasn't loaded yet
+                            var watchAdded = true;
+                            var unbindWatch = scope.$watch('fbLike', function (newValue, oldValue) {
+                                if (newValue) {
+                                    renderLikeButton();
+
+                                    // only need to run once
+                                    unbindWatch();
+                                }
+
+                            });
+                            return;
+                        } else {
+                            element.html('<div class="fb-like"' + (!!scope.fbLike ? ' data-href="' + scope.fbLike + '"' : '') + ' data-layout="standard" data-action="like" data-width="340" data-show-faces="true" data-share="true"></div>');
+                            $window.FB.XFBML.parse(element.parent()[0]);
+                        }
+                    }
+                }
+            };
+        }])
+
     .directive('calendar', [function () {
         return {
             require: 'ngModel',
@@ -1252,6 +1423,136 @@ angular.module('app', [
             });
         };
     }])
+
+    .directive('focusMe', ['$timeout', function ($timeout) {
+        return {
+            scope: { trigger: '=focusMe' },
+            link: function (scope, element) {
+                scope.$watch('trigger', function (value) {
+                    if (value === true) {
+                        // console.log('trigger',value);
+                        $timeout(function () {
+                            element[0].focus();
+                            scope.trigger = false;
+                        });
+                    }
+                });
+            }
+        };
+    }])
+
+
+    .directive("groupSearch", ["config", function (config) {
+        return {
+            restrict: "AE",        // directive is an Element (not Attribute)
+            scope: {              // set up directive's isolated scope
+                accountDomainId: "=",
+                groups: "=",
+                ngModel: "=",
+                autoSubmit: "=autoSubmit",
+                placeholder: "@",
+                submit: "&"
+            },
+            templateUrl: config.BASE_PATH + 'templates/Panel/Templates/groupSearch.html',
+            replace: true,        // replace original markup with template
+            transclude: true,    // do not copy original HTML content
+            controller: ["$scope", "groupSearchFactory", function ($scope, groupSearchFactory) {
+
+                groupSearchFactory.setKeywordGroups2($scope.groups);
+
+                $scope.hideMatchingGroupsList = function () {
+                    $scope.matchingGroups = [];
+                };
+
+                $scope.getCurrentGroupIndex = function () {
+                    return groupSearchFactory.getSelectedGroupIndex();
+                };
+
+                $scope.setCurrentGroupIndex = function (index, autoSelect) {
+
+                    groupSearchFactory.setSelectedGroupIndex(index, function (selectedGroupName) {
+                        if (autoSelect === true) {
+                            $scope.ngModel = selectedGroupName;
+                            $scope.matchingGroups = [];
+                            $scope.focusInput = true;
+                        }
+                    });
+                };
+
+                $scope.getMatchingGroups = function (q) {
+                    $scope.matchingGroups = groupSearchFactory.getMatchingGroups(q);
+                };
+
+                $scope.selectGroup = function ($event) {
+
+                    if ($event && $event.keyCode == 13 && $scope.matchingGroups.length == 0 && $scope.ngModel) {
+
+                        if ($scope.autoSubmit === true) {
+                            $scope.submit();
+                        }
+                    } else {
+
+                        groupSearchFactory.getSelectedGroupIndex($event, function (selectedGroupName) {
+                            $scope.ngModel = selectedGroupName;
+                            $scope.matchingGroups = [];
+                        });
+                    };
+                };
+            }]
+        };
+    }])
+
+    .directive("trendIcon", [function () {
+        return {
+            restrict: "E",        // directive is an Element (not Attribute)
+            scope: {              // set up directive's isolated scope
+                positions: "=",
+                size: "@"
+            },
+            template:              // replacement HTML (can use our scope vars here)
+                "<span class='{{hiddenClass}} icon-{{size}} {{iconClass}}-{{size}}'></span>",
+            replace: true,        // replace original markup with template
+            transclude: false,    // do not copy original HTML content
+            controller: ["$scope", function ($scope) {
+
+                if ($scope.positions === null) {
+                    $scope.hiddenClass = "hidden";
+                    $scope.iconClass = "none";
+
+                } else {
+
+                    var pos = parseInt($scope.positions);
+
+                    if (pos < 0) {
+                        $scope.iconClass = 'wi-down';
+                    } else if (pos > 0) {
+                        $scope.iconClass = 'wi-up';
+                    } else if (pos == 0) {
+                        $scope.iconClass = 'wi-right';
+                    }
+                }
+
+
+            }],
+            link: function (scope, element, attrs, controller) { }
+
+        };
+    }])
+
+    .run(['$rootScope', '$location', '$anchorScroll', '$routeParams', '$timeout', function ($rootScope, $location, $anchorScroll, $routeParams, $timeout) {
+        $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
+
+            if ($routeParams.scrollTo) {
+
+                $timeout(function () {
+                    $location.hash($routeParams.scrollTo);
+                    $anchorScroll();
+                }, 500, false);
+            }
+
+        });
+    }])
+
     .directive('amchart', ['$rootScope', '$window', '$timeout','config', function ($rootScope, $window, $timeout, config) {
         return {
             restrict: 'E',
@@ -1263,14 +1564,19 @@ angular.module('app', [
                 amgraphs: '=',
                 amdata: '=',
                 high: '=',
-                chartid: '='
+                chartid: '=',
+                amheight: '='
             },
             link: function (scope, el, attrs) {
                 var timer, resize, chart1, chart2;
                 scope.redraw = function() {
                     if (typeof scope.amdata == "undefined" || !scope.amdata) return;
                     var chart = window["chart" + scope.chartid];
-                    if (chart) chart.destroy();
+                    if (chart && typeof chart.destroy == 'function') {
+                        try {
+                            chart.destroy();
+                        } catch (err) {}
+                    }
 
                     var amconfig = {
                         "type": "serial",
@@ -1292,7 +1598,9 @@ angular.module('app', [
                         "guides": [],
                         "valueAxes": [
                             {
-                                "reversed": true
+                                "reversed": true,
+                                "minimum": 0,
+                                "maximim": scope.amheight ? scope.amheight : 100
                             }
                         ],
                         "colors": [
@@ -1354,6 +1662,17 @@ angular.module('app', [
         };
     }]).
 
+    filter('styleMatching', [function () {
+
+        return function (text, q) {
+
+            //text = text.insert(0, "<b>");
+            //text = text.insert(q.length + 3, "</b>");
+
+            return text;
+        };
+    }]).
+
     filter('newlineSplit',  [ function () {
         return function(text) {
 
@@ -1372,11 +1691,37 @@ angular.module('app', [
             text = text.replace(/'/g, '%27');
             text = text.replace(/\+/g, '%2B');
             text = text.replace(/\//g, '%2F');
-
+            text = text.replace(/–/g, '%u2013');
 
 
             return text;
         };
+    }]);
+
+angular.module('app').controller('BulkDeleteKeywordsPopupCtrl', ['$scope', '$rootScope', '$modalInstance', 'ids', 'keywordService', 'config',
+    function ($scope, $rootScope, $modalInstance, ids, keywordService, config) {
+
+        $scope.config = config;
+
+        $scope.popupLoading = false;
+        $scope.ids = ids;
+
+        $scope.ok = function () {
+            $scope.popupLoading = true;
+            keywordService.bulkDelete($scope.ids, function () {
+                $modalInstance.close();
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $rootScope.$on('Error', function (event, msg) {
+            console.log(msg);
+            $modalInstance.dismiss('cancel');
+        });
+
     }]);
 
 angular.module('app').controller('InitialPopupCtrl', ['$scope', '$modalInstance', 'dailyRankingsToDate', '$window', 'upgrade_now_function',
@@ -1399,6 +1744,17 @@ angular.module('app').controller('InitialPopupCtrl', ['$scope', '$modalInstance'
 
         $scope.upgrade_now = upgrade_now_function;
     }]);
+
+angular.module('app').controller('FacebookPopupCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+
+    $scope.FbLikeUrl = "https://www.facebook.com/pages/Wincher/255139058015479?fref=ts";
+
+    $scope.ok = function () { $modalInstance.close(); };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}]);
 
 angular.module('app').controller('EmailShareCtrl', ['$scope', '$modalInstance', 'shareService', 'usersService', 'successId', 'config',
     function ($scope, $modalInstance, shareService, usersService, successId, config) {
@@ -1548,8 +1904,8 @@ angular.module('app').controller('RankingSuccessesCtrl', ['$scope', '$modal', '$
 
     }]);
 
-angular.module('app').controller('SerpPopupCtrl', ['$scope', '$modalInstance', 'keywordService', 'accountDomainKeywordId', 'config',
-    function ($scope, $modalInstance, keywordService, accountDomainKeywordId, config) {
+angular.module('app').controller('SerpPopupCtrl', ['$scope', '$modalInstance' ,'$anchorScroll', '$timeout', '$location', 'keywordService', 'accountDomainKeywordId', 'config',
+    function ($scope, $modalInstance, $anchorScroll, $timeout, $location, keywordService, accountDomainKeywordId, config) {
 
         $scope.config = config;
 
@@ -1561,6 +1917,12 @@ angular.module('app').controller('SerpPopupCtrl', ['$scope', '$modalInstance', '
                 function (response) {
                     $scope.model = response.data.data;
                     $scope.loading = false;
+
+                    $timeout(function () {
+                        $location.hash("serppos");
+                        $anchorScroll();
+                    }, 1000, false);
+
                 }, function (data) {
                     $scope.errorMessage = data.Message;
                     $scope.loading = false;
@@ -1574,69 +1936,116 @@ angular.module('app').controller('SerpPopupCtrl', ['$scope', '$modalInstance', '
         };
     }]);
 
-angular.module('app').controller('PdfReportPopupCtrl', ['$scope', 'autoReportService', 'accountService', '$modalInstance', 'request', function ($scope, autoReportService, accountService, $modalInstance, request) {
+angular.module('app').controller('PdfReportPopupCtrl', ['$scope', 'autoReportService', 'accountService', 'keywordService', 'domainService', '$modalInstance', 'request', 'dict', 'domainName', 'config',
+    function ($scope, autoReportService, accountService, keywordService, domainService, $modalInstance, request, dict, domainName, config) {
 
-    $scope.uploadError = null;
-    $scope.selectedIndex = null;
-    $scope.images = null;
-    $scope.Request = request;
+        $scope.config = config;
 
-    $scope.getImages = function () {
-        accountService.images(function (images) {
-            $scope.images = images;
-            $scope.selectedIndex = 0;
-            $scope.uploadError = null;
-        });
-    };
-
-    $scope.onFileSelect = function ($files) {
-        accountService.uploadImage($files[0], function () {
-            $scope.uploadError = null;
-            $scope.getImages();
-        });
-    };
-
-    $scope.next = function () {
-
-        if ($scope.selectedIndex + 1 >= $scope.images.length) {
-            $scope.selectedIndex = 0;
-        } else {
-            $scope.selectedIndex += 1;
-        }
-    };
-
-    $scope.prev = function () {
-
-        if ($scope.selectedIndex - 1 < 0) {
-            $scope.selectedIndex = $scope.images.length - 1;
-        } else {
-            $scope.selectedIndex -= 1;
-        }
-    };
-
-    $scope.getImages();
-
-    $scope.$on('Error', function (event, msg) {
-        $scope.uploadError = msg;
-    });
-
-
-    $scope.cancel = function () {
+        $scope.dict = dict;
         $scope.uploadError = null;
-        $modalInstance.dismiss('cancel');
-    };
-}]);
 
-angular.module('app').controller('AutoReportPopupCtrl', ['$scope', 'autoReportService', '$modalInstance', 'accountDomainId', 'config', function ($scope, autoReportService, $modalInstance, accountDomainId, config) {
+        $scope.selectedIndex = null;
+        $scope.images = null;
+        $scope.Request = request;
+        $scope.selectedAccountDomainKeywordGroupId = null;
+        $scope.logoUrl = my_ajax_obj.ajax_url + "/image.jpg?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=image&Id";
+
+        $scope.getImages = function () {
+            accountService.images(function (images) {
+                $scope.images = images;
+                $scope.selectedIndex = 0;
+                $scope.uploadError = null;
+            });
+        };
+
+        $scope.getKeywordGroupList = function () {
+            keywordService.getKeywordFilterList(request.AccountDomainId).then(function (response) {
+                if (response.data.success) {
+                    $scope.filterOptions = window._.filter(response.data.data, function (option) {
+                        return option.Type == 1;
+                    });
+                }
+
+            }, function (data) {
+                console.log(data);
+            });
+        };
+
+        $scope.deleteLogo = function () {
+
+            accountService.deleteImage($scope.images[$scope.selectedIndex], function (response) {
+                if (response.success) {
+                    $scope.uploadError = null;
+                    $scope.getImages();
+                } else {
+                    $scope.uploadError = response.error.Message;
+                }
+            });
+        };
+
+
+        $scope.onFileSelect = function ($files) {
+            accountService.uploadImage($files[0], function () {
+                $scope.uploadError = null;
+                $scope.getImages();
+            });
+        };
+
+        $scope.next = function () {
+
+            if ($scope.selectedIndex + 1 >= $scope.images.length) {
+                $scope.selectedIndex = 0;
+            } else {
+                $scope.selectedIndex += 1;
+            }
+        };
+
+        $scope.prev = function () {
+
+            if ($scope.selectedIndex - 1 < 0) {
+                $scope.selectedIndex = $scope.images.length - 1;
+            } else {
+                $scope.selectedIndex -= 1;
+            }
+        };
+
+        $scope.downloadPdf = function (image, Filter) {
+            domainService.getPDF($scope.Request, image, Filter, domainName);
+        };
+
+        $scope.getImages();
+        $scope.getKeywordGroupList();
+        $scope.$on('Error', function (event, msg) {
+            $scope.uploadError = msg;
+        });
+
+
+        $scope.cancel = function () {
+            $scope.uploadError = null;
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+
+
+angular.module('app').controller('AutoReportPopupCtrl', ['$scope', 'accountService', 'autoReportService', '$modalInstance', 'accountDomainId', 'dict', 'config',
+    function ($scope, accountService, autoReportService, $modalInstance, accountDomainId, dict, config) {
 
     $scope.config = config;
     $scope.uploadError = null;
+    $scope.dict = dict;
     $scope.model = {};
     $scope.get = function () {
         autoReportService.get(accountDomainId, function (response) {
             if (response.success) {
                 $scope.model = response.data;
-                $scope.model.logoUrl = my_ajax_obj.ajax_url + "?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=autoreport_image&Id=" + $scope.model.LogoId;
+
+                if ($scope.model.Filter) {
+                    $scope.model.Filter = window._.find($scope.model.FilterOptions, function (o) {
+                        return o.Value == $scope.model.Filter.Value && o.Type == $scope.model.Filter.Type;
+                    });
+                }
+
+                $scope.model.logoUrl = my_ajax_obj.ajax_url + "/image.jpg?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=image&Id=" + $scope.model.LogoId;
                 $scope.uploadError = null;
             } else {
                 $scope.uploadError = response.error;
@@ -1648,7 +2057,7 @@ angular.module('app').controller('AutoReportPopupCtrl', ['$scope', 'autoReportSe
         autoReportService.post(accountDomainId, $scope.model, function (response) {
             if (response.success) {
                 $scope.model = response.data;
-                $scope.model.logoUrl = my_ajax_obj.ajax_url + "?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=autoreport_image&Id=" + $scope.model.LogoId;
+                $scope.model.logoUrl = my_ajax_obj.ajax_url + "/image.jpg?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=image&Id=" + $scope.model.LogoId;
                 $scope.uploadError = null;
                 $modalInstance.close();
             } else {
@@ -1658,10 +2067,10 @@ angular.module('app').controller('AutoReportPopupCtrl', ['$scope', 'autoReportSe
     };
 
     $scope.onFileSelect = function ($files) {
-        autoReportService.uploadLogo(accountDomainId, $files[0], function (response) {
+        accountService.uploadImage($files[0], function (response) {
             if (response.success) {
                 $scope.model.LogoId = response.data.ImageId;
-                $scope.model.logoUrl = my_ajax_obj.ajax_url + "?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=autoreport_image&Id=" + $scope.model.LogoId;
+                $scope.model.logoUrl = my_ajax_obj.ajax_url + "/image.jpg?ajax_nonce=" +  my_ajax_obj.nonce + "&action=angular_proxy&type=image&Id=" + $scope.model.LogoId;
                 $scope.uploadError = null;
             }
         });
@@ -1720,14 +2129,15 @@ angular.module('app').controller('CreateKeywordBulkPopupCtrl', ['$scope', '$root
     $scope.config = config;
 
 
-    $scope.ok = function (keywords) {
+    $scope.ok = function (keywords, newGroups) {
         $scope.popupLoading = true;
         var list = $filter('newlineSplit')(keywords);
-        $scope.insertBulkKeywords(list);
+        $scope.insertBulkKeywords(list, newGroups);
     };
 
-    $scope.insertBulkKeywords = function (newKeywords) {
-        keywordService.createBulk(userDomainId, newKeywords).then(
+    $scope.insertBulkKeywords = function (newKeywords, newGroups) {
+
+        keywordService.createBulk(userDomainId, newKeywords, newGroups).then(
             function (response) {
                 $modalInstance.close(response.data);
             }, function (data) {
@@ -1768,7 +2178,7 @@ angular.module('app').controller('CreateKeywordBulkPopupCtrl', ['$scope', '$root
 
 }]);
 
-angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modalInstance', '$sce', 'accountDomainKeywordId', 'domainService', 'selectedGraphInterval', 'showCompetitors', 'config', function ($scope, $modalInstance, $sce, accountDomainKeywordId, domainService, selectedGraphInterval, showCompetitors, config) {
+angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modalInstance', '$sce', 'filter', 'domainService', 'selectedGraphInterval', 'showCompetitors', 'config', function ($scope, $modalInstance, $sce, filter, domainService, selectedGraphInterval, showCompetitors, config) {
     $scope.config = config;
 
     $scope.chartLoading = true;
@@ -1784,7 +2194,7 @@ angular.module('app').controller('KeywordChartZoomPopupCtrl', ['$scope', '$modal
     params.GraphInterval = selectedGraphInterval;
     params.includeCompetitors = showCompetitors;
     params.Height = h;
-    params.SelectedAccountDomainKeywordId = accountDomainKeywordId;
+    params.Filter = filter;
 
     domainService.getKeywordChartRaw(params, function (response) {
 

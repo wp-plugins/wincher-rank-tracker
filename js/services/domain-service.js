@@ -11,7 +11,8 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getTags = function (callback) {
+    },
+    getTags = function (callback) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
@@ -21,7 +22,8 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getUserDomain = function (request, callback) {
+    },
+    getUserDomain = function (request, callback) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
@@ -31,6 +33,9 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
             Page: request.Page,
             ResultsPerPage: request.ResultsPerPage,
             OrderBy: request.OrderBy,
+            Filter: request.Filter,
+            SortBy: request.SortBy,
+            GraphHeight: request.GraphHeight,
 
             Height: request.Height,
             SelectedAccountDomainKeywordId:request.SelectedAccountDomainKeywordId
@@ -39,7 +44,19 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getUserDomainKeywords = function (AccountDomainId, callback) {
+    },
+    getDictionary = function (callback) {
+            var params = {
+                _ajax_nonce: my_ajax_obj.nonce,
+                action: "angular_proxy",
+                type: "dictionary"
+            };
+
+            $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
+                callback && callback(n)
+            })
+    },
+    getUserDomainKeywords = function (AccountDomainId, callback) {
             var params = {
                 _ajax_nonce: my_ajax_obj.nonce,
                 action: "angular_proxy",
@@ -50,7 +67,8 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
             $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
                 callback && callback(n)
             })
-    }, getChart = function (request, callback) {
+    },
+    getChart = function (request, callback) {
 
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
@@ -62,13 +80,17 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
             Page: request.Page ? request.Page : 1,
             ResultsPerPage: request.ResultsPerPage ? request.ResultsPerPage : 10,
             OrderBy: request.OrderBy,
-            GraphInterval: request.GraphInterval
+            GraphInterval: request.GraphInterval,
+            Filter: request.Filter,
+            SortBy: request.SortBy,
+            GraphHeight: request.GraphHeight
         };
 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getChartRaw = function (request, callback) {
+    },
+    getChartRaw = function (request, callback) {
 
             var params = {
                 _ajax_nonce: my_ajax_obj.nonce,
@@ -80,13 +102,17 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
                 Page: request.Page ? request.Page : 1,
                 ResultsPerPage: request.ResultsPerPage ? request.ResultsPerPage : 10,
                 OrderBy: request.OrderBy,
-                GraphInterval: request.GraphInterval
+                GraphInterval: request.GraphInterval,
+                Filter: request.Filter,
+                SortBy: request.SortBy,
+                GraphHeight: request.GraphHeight
             };
 
             $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
                 callback && callback(n)
             })
-    }, getKeywordChart = function (request, callback) {
+    },
+    getKeywordChart = function (request, callback) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
@@ -101,22 +127,24 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getKeywordChartRaw = function (request, callback) {
+    },
+    getKeywordChartRaw = function (request, callback) {
             var params = {
                 _ajax_nonce: my_ajax_obj.nonce,
                 action: "angular_proxy",
                 type: "keyword_chart_raw",
-
-                SelectedAccountDomainKeywordId: request.SelectedAccountDomainKeywordId,
                 Height: request.Height,
                 GraphInterval: request.GraphInterval,
-                IncludeCompetitors: request.includeCompetitors
+                IncludeCompetitors: request.includeCompetitors,
+                Filter: request.Filter,
+                SortBy: request.SortBy
             };
 
             $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
                 callback && callback(n)
             })
-    }, getRankingTrend = function (domainId, summaryInterval, callback) {
+    },
+    getRankingTrend = function (domainId, summaryInterval, callback) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
@@ -128,7 +156,8 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getRankingSuccesses = function (domainId, count, callback) {
+    },
+    getRankingSuccesses = function (domainId, count, callback) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
@@ -140,7 +169,8 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         $http.post(my_ajax_obj.ajax_url, jQuery.param(params), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).success(function (n) {
             callback && callback(n)
         })
-    }, getRankingSuccessesPage = function (userDomainId, page, callback) {
+    },
+    getRankingSuccessesPage = function (userDomainId, page, callback) {
 
         if (userDomainId) {
 
@@ -156,16 +186,15 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
                 callback && callback(n)
             })
         }
-    },
-
-    getCSV = function (domainId, from, to) {
+    }
+        ,
+    getCSV = function (domainId, request) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
             type: "domain_csv",
             Id: domainId,
-            from: from,
-            to: to
+            GraphInterval: request.GraphInterval
         }
 
         var hiddenIFrameID = 'hiddenDownloader',
@@ -178,18 +207,60 @@ angular.module('app').service("domainService", ["$http", "$q", function ($http, 
         }
         iframe.src = my_ajax_obj.ajax_url + '?' + jQuery.param(params);
     },
+    getSimpleCSV = function (domainId, request) {
+        var params = {
+            _ajax_nonce: my_ajax_obj.nonce,
+            action: "angular_proxy",
+            type: "domain_simple_csv",
+            Id: domainId,
+            GraphInterval: request.GraphInterval
+        };
 
-    getPDF = function (domainId, from, to) {
+        var hiddenIFrameID = 'hiddenDownloader',
+            iframe = document.getElementById(hiddenIFrameID);
+        if (iframe === null) {
+            iframe = document.createElement('iframe');
+            iframe.id = hiddenIFrameID;
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+        iframe.src = my_ajax_obj.ajax_url + '?' + jQuery.param(params);
+    },
+
+    getPDF = function (request, image, Filter, domainName) {
         var params = {
             _ajax_nonce: my_ajax_obj.nonce,
             action: "angular_proxy",
             type: "domain_pdf",
-            Id: domainId,
-            from: from,
-            to: to
-        }
+            AccountDomainId: request.AccountDomainId,
+            GraphInterval: request.GraphInterval,
+            Filter: Filter,
+            LogoId: image
+        };
 
-        window.open(my_ajax_obj.ajax_url + '?' + jQuery.param(params),'_blank');
+        var hiddenIFrameID = 'hiddenDownloader',
+            iframe = document.getElementById(hiddenIFrameID);
+        if (iframe === null) {
+            iframe = document.createElement('iframe');
+            iframe.id = hiddenIFrameID;
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+        }
+        iframe.src = my_ajax_obj.ajax_url + '/' + domainName + '_pdf.pdf?' + jQuery.param(params);
     };
-    return{getCSV: getCSV, getPDF: getPDF, getUserDomain: getUserDomain, getUserDomainKeywords: getUserDomainKeywords, getRankingTrend: getRankingTrend, getChart: getChart, getChartRaw: getChartRaw, getKeywordChart: getKeywordChart, getKeywordChartRaw: getKeywordChartRaw, getRankingSuccesses: getRankingSuccesses, getRankingSuccessesPage: getRankingSuccessesPage, getDomainId: getDomainId}
+    return {
+        getCSV: getCSV,
+        getSimpleCSV: getSimpleCSV,
+        getPDF: getPDF,
+        getUserDomain: getUserDomain,
+        getDictionary: getDictionary,
+        getUserDomainKeywords: getUserDomainKeywords,
+        getRankingTrend: getRankingTrend,
+        getChart: getChart,
+        getChartRaw: getChartRaw,
+        getKeywordChart: getKeywordChart,
+        getKeywordChartRaw: getKeywordChartRaw,
+        getRankingSuccesses: getRankingSuccesses,
+        getRankingSuccessesPage: getRankingSuccessesPage,
+        getDomainId: getDomainId}
 }])

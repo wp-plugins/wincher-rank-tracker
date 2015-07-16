@@ -1,7 +1,8 @@
 <?php
 
 Class Wincher_API {
-    public static $base_url = 'https://wp.wincher.com/v2/';
+    public static $base_url = 'https://wp.wincher.com/v3/';
+
 
     public static function processRequest($request_type) {
         if (empty($request_type)) {
@@ -64,6 +65,10 @@ Class Wincher_API {
                     self::getDomainKeywords();
                     break;
 
+                case 'dictionary':
+                    self::getDictionary();
+                    break;
+
                 case 'trend':
                     self::getTrend();
                     break;
@@ -116,6 +121,26 @@ Class Wincher_API {
                     self::deleteKeyword();
                     break;
 
+                case 'delete_keyword_bulk':
+                    self::deleteKeywordBulk();
+                    break;
+
+                case 'keywordgroup_all':
+                    self::keywordGroupAll();
+                    break;
+
+                case 'keywordgroup_add':
+                    self::keywordGroupAdd();
+                    break;
+
+                case 'keywordgroup_delete':
+                    self::keywordGroupDelete();
+                    break;
+
+                case 'keywordgroup_filteroptions':
+                    self::keywordGroupFilterOptions();
+                    break;
+
                 // keyword id by domainId and keyword name
                 case 'keyword_id':
                     self::getKeywordId();
@@ -138,17 +163,30 @@ Class Wincher_API {
                     self::setAutoreport();
                     break;
 
-                case 'autoreport_image':
-                    self::getAutoreportImage();
+                case 'image':
+                    self::image();
                     break;
 
-                case 'autoreport_edit_file':
-                    self::setAutoreportFile();
+                case 'image_all':
+                    self::imageAll();
+                    break;
+
+                case 'image_upload':
+                    self::imageUpload();
+                    break;
+
+                case 'image_delete':
+                    self::imageDelete();
                     break;
 
                 // Google stats
                 case 'domain_csv':
                     self::getDomainCsv();
+                    break;
+
+                // Google stats
+                case 'domain_simple_csv':
+                    self::getDomainSimpleCsv();
                     break;
 
                 // Google stats
@@ -739,6 +777,9 @@ Class Wincher_API {
             "ResultsPerPage"                    => intval($_REQUEST["ResultsPerPage"]),
             "Height"                            => intval($_REQUEST["Height"]),
             "SelectedAccountDomainKeywordId"    => $_REQUEST["SelectedAccountDomainKeywordId"],
+            "Filter"                            => $_REQUEST["Filter"],
+            "SortBy"                            => $_REQUEST["SortBy"],
+            "GraphHeight"                       => $_REQUEST["GraphHeight"],
         );
 
         $url = 'domain';
@@ -787,6 +828,43 @@ Class Wincher_API {
 
         $url = 'domain/keywords';
         $method = 'GET';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            )
+        ));
+
+        $response_body = json_decode($response['body'], true);
+
+        if ($response['response']['code'] != 200) {
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'data' => $response_body,
+            );
+        }
+
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public function getDictionary() {
+        $request_fields = array();
+
+        $url = 'dictionary';
+        $method = 'POST';
 
         $email = get_option('wincher_email');
         $key = get_option('wincher_api_key');
@@ -943,6 +1021,9 @@ Class Wincher_API {
             "ResultsPerPage"    => $_REQUEST["ResultsPerPage"],
             "OrderBy"           => $_REQUEST["OrderBy"],
             "GraphInterval"     => $_REQUEST["GraphInterval"],
+            "Filter"            => $_REQUEST["Filter"],
+            "SortBy"            => $_REQUEST["SortBy"],
+            "GraphHeight"       => $_REQUEST["GraphHeight"],
         );
         $url = 'chart';
         $method = 'GET';
@@ -987,7 +1068,15 @@ Class Wincher_API {
             "ResultsPerPage"    => $_REQUEST["ResultsPerPage"],
             "OrderBy"           => $_REQUEST["OrderBy"],
             "GraphInterval"     => $_REQUEST["GraphInterval"],
+            "Filter"            => $_REQUEST["Filter"],
+            "SortBy"            => $_REQUEST["SortBy"],
+            "GraphHeight"       => intval($_REQUEST["GraphHeight"]),
         );
+
+        if (empty($request_fields['GraphHeight'])) {
+            $request_fields['GraphHeight'] = 105;
+        }
+
         $url = 'rank';
         $method = 'GET';
 
@@ -1021,11 +1110,45 @@ Class Wincher_API {
 
         $graphs = array();
         $data_parsed = array();
+
         foreach ($response_body as $row) {
+
+            $is_gap = true;
+            $have_line = false;
+            $last_data = array();
+
             foreach ($row['Values'] as $data) {
+
+                if ($data['Position'] > $request_fields["GraphHeight"]) {
+                    $data['Position'] = $request_fields["GraphHeight"];
+                    $last_data = $data;
+
+                    if ($is_gap) {
+                        continue;
+                    } else {
+                        if (empty($have_line)) {
+                            continue;
+                        }
+
+                        $data_parsed[$last_data['Date']]['date'] = $last_data['Date'];
+                        $data_parsed[$last_data['Date']][$row['Label']] = $last_data['Position'];
+                        $is_gap = true;
+                    }
+                } else {
+                    if ($is_gap && !empty($last_data)) {
+                        $is_gap = false;
+                        $data_parsed[$last_data['Date']]['date'] = $last_data['Date'];
+                        $data_parsed[$last_data['Date']][$row['Label']] = $last_data['Position'];
+                        $have_line = true;
+                        $last_data = array();
+                    }
+                }
+
+                $have_line = true;
                 $data_parsed[$data['Date']]['date'] = $data['Date'];
                 $data_parsed[$data['Date']][$row['Label']] = $data['Position'];
             }
+
             $bullet = $bullet_types[array_rand($bullet_types)];
             $tmp = $graph_template;
             $tmp['balloonText'] = str_replace('{{Keyword}}', $row['Label'], $tmp['balloonText']);
@@ -1104,10 +1227,11 @@ Class Wincher_API {
 
     public static function getKeywordChartRaw() {
         $request_fields = array(
-            "SelectedAccountDomainKeywordId" => intval($_REQUEST["SelectedAccountDomainKeywordId"]),
             "Height"            => intval($_REQUEST["Height"]),
             "GraphInterval"     => intval($_REQUEST["GraphInterval"]),
             "IncludeCompetitors"=> (boolean) $_REQUEST["IncludeCompetitors"],
+            "Filter"            => $_REQUEST["Filter"],
+            "SortBy"            => $_REQUEST["SortBy"],
         );
 
         $url = 'rank/keyword';
@@ -1226,6 +1350,7 @@ Class Wincher_API {
         $request_fields = array(
             "AccountDomainId" => intval($_REQUEST["AccountDomainId"]),
             "Keyword" => urldecode($_REQUEST["Keyword"]),
+            "Groups" => urldecode($_REQUEST["Groups"]),
         );
         $url = 'keyword';
         $method = 'POST';
@@ -1266,6 +1391,7 @@ Class Wincher_API {
         $request_fields = array(
             "AccountDomainId" => intval($_REQUEST["AccountDomainId"]),
             "Keywords" => explode(',',urldecode($_REQUEST["Keywords"])),
+            "Groups" => urldecode($_REQUEST["Groups"]),
         );
 
         $url = 'keyword/bulk';
@@ -1407,6 +1533,205 @@ Class Wincher_API {
         echo json_encode($result);
     }
 
+    public static function deleteKeywordBulk() {
+
+        $ids_string = $_REQUEST["ids"];
+        $ids = array();
+        foreach($ids_string as $keyword_id) {
+            $ids[] = intval($keyword_id);
+        }
+
+        $request_fields = array(
+            "ids" => $ids,
+        );
+        $url = 'keyword/bulkdelete';
+        $method = 'POST';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] != 200) {
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'data' => $response_body,
+            );
+        }
+
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public static function keywordGroupAll() {
+        $request_fields = array(
+            "accountDomainId" => intval($_REQUEST["accountDomainId"]),
+        );
+        $url = 'keywordgroup/all';
+        $method = 'GET';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'url' => self::$base_url . $url . '?accountDomainId=' . $request_fields["AccountDomainId"],
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] != 201) {
+            $response_body = json_decode($response_body, true);
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'Message' => $response_body,
+            );
+        }
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public static function keywordGroupAdd() {
+        $request_fields = array(
+            "accountDomainKeywordId" => intval($_REQUEST["accountDomainKeywordId"]),
+            "name" => $_REQUEST["name"],
+        );
+        $url = 'keywordgroup/add';
+        $method = 'POST';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] != 201) {
+            $response_body = json_decode($response_body, true);
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'Message' => $response_body,
+            );
+        }
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public static function keywordGroupDelete() {
+        $request_fields = array(
+            "accountDomainKeywordId" => intval($_REQUEST["accountDomainKeywordId"]),
+            "groupId" => intval($_REQUEST["groupId"]),
+        );
+        $url = 'keywordgroup/delete';
+        $method = 'DELETE';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] != 200) {
+            $response_body = json_decode($response_body, true);
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'Message' => $response_body,
+            );
+        }
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public static function keywordGroupFilterOptions() {
+        $request_fields = array(
+            "AccountDomainId" => intval($_REQUEST["accountDomainId"]),
+        );
+        $url = 'keyword/filteroptions';
+        $method = 'GET';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if (in_array($response['response']['code'], array(400, 401))) {
+            $response_body = json_decode($response_body, true);
+            $result = array(
+                'success' => false,
+                'error' => $response_body['Message'],
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'data' => json_decode($response_body, true),
+            );
+        }
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+
     public static function getKeywordSerp() {
         $request_fields = array(
             "AccountDomainKeywordId" => intval($_REQUEST["Id"]),
@@ -1462,7 +1787,7 @@ Class Wincher_API {
             'headers' => array(
                 'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
             ),
-        ), true, true);
+        ));
 
         $response_body = json_decode($response['body'], true);
 
@@ -1569,6 +1894,7 @@ Class Wincher_API {
             "SendTo" => $_REQUEST["SendTo"],
             "LogoId" => intval($_REQUEST["LogoId"]),
             "Enabled" => (boolean) $_REQUEST["Enabled"],
+            "Filter" => $_REQUEST["Filter"],
         );
 
         $url = 'autoreport';
@@ -1603,12 +1929,12 @@ Class Wincher_API {
         header('Content-type: application/json;');
         echo json_encode($result);
     }
-    public static function getAutoreportImage() {
+    public static function image() {
         $request_fields = array(
             "Id" => intval($_REQUEST["Id"]),
         );
         $url = 'image';
-        $method = 'POST';
+        $method = 'GET';
 
         $email = get_option('wincher_email');
         $key = get_option('wincher_api_key');
@@ -1616,6 +1942,41 @@ Class Wincher_API {
         $response = self::requestApi(array(
             'args' => $request_fields,
             'url' => self::$base_url . $url . '?id=' . intval($_REQUEST["Id"]),
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] == 200) {
+            header('Content-Type:' . $response['headers']['content-type']);
+            header('Content-Length:' . $response['headers']['content-length']);
+            echo $response['body'];
+        } else {
+            $result = array(
+                'success' => true,
+                'data' => $response_body,
+            );
+        }
+
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
+    public static function imageAll() {
+        $request_fields = array();
+        $url = 'image/all';
+        $method = 'GET';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
             'method' => $method,
             'headers' => array(
                 'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
@@ -1639,10 +2000,10 @@ Class Wincher_API {
         echo json_encode($result);
     }
 
-    public static function setAutoreportFile() {
+    public static function imageUpload() {
         $request_fields = array();
 
-        $url = 'autoreport/uploadlogo';
+        $url = 'image/upload';
         $method = 'POST';
 
         $email = get_option('wincher_email');
@@ -1712,11 +2073,48 @@ Class Wincher_API {
         echo json_encode($result);
     }
 
+    public static function imageDelete() {
+        $request_fields = array(
+            "Id" => intval($_REQUEST["id"]),
+        );
+        $url = 'image/delete';
+        $method = 'POST';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url . '?id=' . intval($request_fields["Id"]),
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+
+        $response_body = $response['body'];
+
+        if ($response['response']['code'] == 400) {
+            $result = array(
+                'success' => false,
+                'error' => json_decode($response_body, true),
+            );
+        } else {
+            $result = array(
+                'success' => true,
+                'data' => $response_body,
+            );
+        }
+
+
+        header('Content-type: application/json;');
+        echo json_encode($result);
+    }
+
     public function getDomainCsv() {
         $request_fields = array(
             "AccountDomainId" => intval($_REQUEST["Id"]),
-            "from" => $_REQUEST["from"],
-            "to" => $_REQUEST["to"],
+            "GraphInterval" => intval($_REQUEST["GraphInterval"]),
         );
         $url = 'domain/csv';
         $method = 'GET';
@@ -1744,11 +2142,45 @@ Class Wincher_API {
         wp_die();
     }
 
-    public function getDomainPdf() {
+    public function getDomainSimpleCsv() {
         $request_fields = array(
             "AccountDomainId" => intval($_REQUEST["Id"]),
-            "from" => $_REQUEST["from"],
-            "to" => $_REQUEST["to"],
+            "GraphInterval" => intval($_REQUEST["GraphInterval"]),
+        );
+        $url = 'domain/simplecsv';
+        $method = 'GET';
+
+        $email = get_option('wincher_email');
+        $key = get_option('wincher_api_key');
+
+        $response = self::requestApi(array(
+            'args' => $request_fields,
+            'url' => self::$base_url . $url,
+            'method' => $method,
+            'headers' => array(
+                'Authorization' => "Basic " . base64_encode($email .  ':' . $key)
+            ),
+        ));
+        $response_body = $response['body'];
+
+        if (!empty($response['headers']['content-disposition'])) {
+            header("Content-Disposition: " . $response['headers']['content-disposition']);
+        }
+
+        header("Content-Type: text/csv");
+        header("Content-Length: " . strlen($response_body));
+        echo $response_body;
+        wp_die();
+    }
+
+    public function getDomainPdf() {
+        $request_fields = array(
+            "AccountDomainId" => intval($_REQUEST["AccountDomainId"]),
+            "GraphInterval" => intval($_REQUEST["GraphInterval"]),
+            "Interval" => intval($_REQUEST["GraphInterval"]),
+            "LogoId" => intval($_REQUEST["LogoId"]),
+            "FilterType" => !empty($_REQUEST["Filter"])? $_REQUEST["Filter"]["Type"] : null,
+            "FilterValue" => !empty($_REQUEST["Filter"])? $_REQUEST["Filter"]["Value"] : null,
         );
         $url = 'domain/pdf';
         $method = 'GET';
@@ -1766,9 +2198,9 @@ Class Wincher_API {
         ));
         $response_body = $response['body'];
 
-        header("Content-Type: application/pdf");
-        header("Content-Length: " . strlen($response_body));
-
+        header('Content-type:' . $response['headers']['content-type']);
+        header('Content-length:' . $response['headers']['content-length']);
+        header('Content-Disposition:' . $response['headers']['content-disposition']);
         echo $response_body;
         wp_die();
     }
@@ -1785,12 +2217,12 @@ Class Wincher_API {
         if (!empty($domain['host']) && strcmp('wp-test', $domain['host'])) {
             return $domain['host'];
         } else {
-            //return 'solidfiles.com';
+            return 'solidfiles.com';
             //return 'twitter.com';
             //return 'wp-test.wincher.com';
             //return 'dietguiden.com';
             //return "facebook.com";
-            return "www.wincher.com";
+            //return "www.wincher.com";
             //return "whiskykritikerna.se";
             //return "solidfiles.com";
             //return "wp-test.wincher.com";
