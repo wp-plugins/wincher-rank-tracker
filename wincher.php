@@ -3,7 +3,7 @@
 Plugin Name: Wincher Rank Tracker
 Plugin URI: https://wordpress.org/plugins/wincher-rank-tracker
 Description: Free search engine ranking tool for all your keywords. Keep an eye on your competitors, generate PDF reports, ranking history in graphs, easy sharing, and a lot more. Activate Wincher Rank Tracker to get a grip of your SEO and rankings today!
-Version: 1.1.0
+Version: 1.2.0
 Author: Wincher
 Author URI: http://wincher.com
 */
