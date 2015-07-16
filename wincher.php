@@ -68,8 +68,8 @@ function init() {
         wp_register_script('bootstrap-datepicker', plugins_url('/js/bootstrap-datepicker.js', __FILE__) );
         wp_register_script('d3', plugins_url('/js/d3.v3.min.js', __FILE__) );
 
-        wp_register_script('amcharts_main', '//cdn.amcharts.com/lib/3/amcharts.js', array(), null, false);
-        wp_register_script('amcharts_serial', '//cdn.amcharts.com/lib/3/serial.js', array(), null, false);
+        wp_register_script('amcharts_main', 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/amcharts.js', array(), null, false);
+        wp_register_script('amcharts_serial', 'https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/serial.js', array(), null, false);
 
         wp_register_script('underscore', plugins_url('/js/underscore-min.js', __FILE__) );
         wp_register_script('domain-service', plugins_url('/js/services/domain-service.js', __FILE__) );
